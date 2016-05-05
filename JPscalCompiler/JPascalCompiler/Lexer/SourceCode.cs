@@ -15,14 +15,14 @@
             _currentIndex = 0;
         }
 
-        public Symbol nextChar()
+        public Symbol NextCharacter()
         {
             if (_currentIndex >= _input.Length)
-                return new Symbol {Row = _row, Column = _column,Char = '\0'};
+                return new Symbol {Row = _row, Column = _column,Character = '\0'};
 
-            Symbol newCurrentChar = new Symbol {Row = _row,Column = _column,Char = _input[_currentIndex++] };
+            Symbol newCurrentChar = new Symbol {Row = _row,Column = _column,Character = _input[_currentIndex++] };
 
-            if (newCurrentChar.Char.Equals('\n'))
+            if (newCurrentChar.Character.Equals('\n'))
             {
                 _column = 0;
                 _row += 1;

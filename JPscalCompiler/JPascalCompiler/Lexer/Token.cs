@@ -9,7 +9,13 @@ namespace JPascalCompiler.Lexer
 
     public enum TokenTypes
     {
-        EOF
+        EOF,
+        Id,
+        Integer,
+        Float,
+        ReservedWord,
+        Operator,
+        PunctuationSymbol
     }
 
     public class Token
