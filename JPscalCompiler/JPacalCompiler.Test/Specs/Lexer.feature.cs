@@ -186,7 +186,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Column",
                         "Row"});
             table4.AddRow(new string[] {
-                        "ReservedWord",
+                        "Type",
                         "type",
                         "0",
                         "0"});
@@ -288,7 +288,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Column",
                         "Row"});
             table7.AddRow(new string[] {
-                        "ReservedWord",
+                        "Var",
                         "var",
                         "0",
                         "0"});
@@ -332,7 +332,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table8.AddRow(new string[] {
-                        "Operator",
+                        "OpMod",
                         "mod",
                         "3",
                         "0"});
@@ -371,17 +371,17 @@ this.ScenarioSetup(scenarioInfo);
                         "Column",
                         "Row"});
             table9.AddRow(new string[] {
-                        "ReservedWord",
+                        "True",
                         "true",
                         "0",
                         "0"});
             table9.AddRow(new string[] {
-                        "Operator",
+                        "OpAnd",
                         "and",
                         "5",
                         "0"});
             table9.AddRow(new string[] {
-                        "ReservedWord",
+                        "False",
                         "false",
                         "9",
                         "0"});
@@ -420,7 +420,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table10.AddRow(new string[] {
-                        "Operator",
+                        "OpSum",
                         "+",
                         "3",
                         "0"});
@@ -464,7 +464,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table11.AddRow(new string[] {
-                        "Operator",
+                        "OpMult",
                         "*",
                         "3",
                         "0"});
@@ -493,7 +493,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 103
 this.ScenarioSetup(scenarioInfo);
 #line 104
- testRunner.Given("I have an input of \'type vector = array [ 0..24] of real;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have an input of \'type vector = array [ 0..24] of float;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 105
  testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -503,7 +503,7 @@ this.ScenarioSetup(scenarioInfo);
                         "Column",
                         "Row"});
             table12.AddRow(new string[] {
-                        "ReservedWord",
+                        "Type",
                         "type",
                         "0",
                         "0"});
@@ -513,17 +513,17 @@ this.ScenarioSetup(scenarioInfo);
                         "5",
                         "0"});
             table12.AddRow(new string[] {
-                        "Operator",
+                        "OpEquals",
                         "=",
                         "12",
                         "0"});
             table12.AddRow(new string[] {
-                        "ReservedWord",
+                        "Array",
                         "array",
                         "14",
                         "0"});
             table12.AddRow(new string[] {
-                        "PunctuationSymbol",
+                        "PsOpenBracket",
                         "[",
                         "19",
                         "0"});
@@ -533,14 +533,39 @@ this.ScenarioSetup(scenarioInfo);
                         "21",
                         "0"});
             table12.AddRow(new string[] {
-                        "PunctuationSymbol",
+                        "PsArrayRange",
                         "..",
                         "22",
                         "0"});
             table12.AddRow(new string[] {
+                        "Integer",
+                        "24",
+                        "24",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "PsCloseBracket",
+                        "]",
+                        "27",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "Of",
+                        "of",
+                        "29",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "Float",
+                        "float",
+                        "31",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "PsSentenseEnd",
+                        ";",
+                        "35",
+                        "0"});
+            table12.AddRow(new string[] {
                         "EOF",
                         "$",
-                        "6",
+                        "36",
                         "0"});
 #line 106
  testRunner.Then("the result should be", ((string)(null)), table12, "Then ");

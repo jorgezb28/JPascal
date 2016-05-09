@@ -31,11 +31,12 @@ namespace JPascalCompiler.Lexer
         {
             _punctuationSymbols = new Hashtable
             {
-                //key = token type, value = lexeme
-                { "ps_openBracket","["},
-                { "ps_closedBracket","]"},
-                { "ps_arrayRange",".." },
-                { "ps_coma" ,","}
+                //key = token TYPE, value = lexeme
+                { "[",TokenTypes.PsOpenBracket},
+                { "]",TokenTypes.PsCloseBracket},
+                { ".." ,TokenTypes.PsArrayRange},
+                { ",",TokenTypes.PsComa},
+                { ";",TokenTypes.PsSentenseEnd}
             };
         }
 
@@ -43,37 +44,37 @@ namespace JPascalCompiler.Lexer
         {
             _operators = new Hashtable
             {
-                //key = token type, value = lexeme
-                {"op_equals","="},
-                {"op_sum","+"},
-                {"op_sub","-"},
-                {"op_mult","*"},
-                {"op_divr","/"},
-                {"op_div","div"},
-                {"op_mod","mod"},
-                {"op_and","and"},
-                {"op_not","not"},
-                {"op_or","or" }
+                //key = token TYPE, value = lexeme
+                {"=",TokenTypes.OpEquals},
+                {"+", TokenTypes.OpSum},
+                {"-",TokenTypes.OpSub},
+                {"*",TokenTypes.OpMult},
+                {"/", TokenTypes.OpDivr},
+                {"div", TokenTypes.Opdiv},
+                {"mod",TokenTypes.OpMod},
+                {"and", TokenTypes.OpAnd},
+                {"not",TokenTypes.OpNot},
+                {"or", TokenTypes.OpOr }
 
             };
         }
 
         private void InitializeHashTableofReservedWords()
         {
-            //key = token type, value = lexeme
+            //key = token TYPE, value = lexeme
             _reservedWords = new Hashtable
             {
-                {"rw_int", "int"},
-                {"rw_float","float" },
-                {"rw_char","char" },
-                {"rw_string","string" },
-                {"rw_boolean","boolean"},
-                {"rw_type","type"},
-                {"rw_array","array"},
-                {"rw_of","of"},
-                {"rw_var","var" },
-                {"rw_true","true"},
-                {"rw_false","false" }
+                {"int", TokenTypes.Integer},
+                {"float",TokenTypes.Float },
+                {"char",TokenTypes.Char },
+                {"strig",TokenTypes.String },
+                {"boolean",TokenTypes.Boolean},
+                {"type",TokenTypes.Type},
+                {"array",TokenTypes.Array},
+                {"of",TokenTypes.Of},
+                {"var",TokenTypes.Var },
+                {"true",TokenTypes.True},
+                {"false",TokenTypes.False }
             };
         }
 
@@ -119,7 +120,8 @@ namespace JPascalCompiler.Lexer
                             currentLexeme += _currentSymbol.Character;
                             _currentSymbol = CodeContent.NextCharacter();
                         }
-                        else if (_operators.ContainsValue(_currentSymbol.Character.ToString()))
+                        else if (_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
+                            _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString()))
                         {
                             state = 5;
                             tokenColumn = _currentSymbol.Column;
@@ -147,21 +149,23 @@ namespace JPascalCompiler.Lexer
                         }
                         else
                         {
-                            if (_reservedWords.ContainsValue(currentLexeme.ToLower()))
+                            if (_reservedWords.ContainsKey(currentLexeme.ToLower()))
                             {
+                                var newTokenType = (TokenTypes)_reservedWords[currentLexeme.ToLower()];
                                 return new Token
                                 {
-                                    Type = TokenTypes.ReservedWord,
+                                    Type = newTokenType,
                                     Lexeme = currentLexeme,
                                     Column = tokenColumn,
                                     Row = tokenRow
                                 };
                             }
-                            if (_operators.ContainsValue(currentLexeme.ToLower()))
+                            if (_operators.ContainsKey(currentLexeme.ToLower()))
                             {
+                                var newTokenType = (TokenTypes)_operators[currentLexeme.ToLower()];
                                 return new Token
                                 {
-                                    Type = TokenTypes.Operator,
+                                    Type = newTokenType,
                                     Lexeme = currentLexeme,
                                     Column = tokenColumn,
                                     Row = tokenRow
@@ -229,13 +233,29 @@ namespace JPascalCompiler.Lexer
                         }
                         break;
                     case 5:
-                        return new Token
+                        if (_punctuationSymbols.ContainsKey(currentLexeme.ToLower()))
                         {
-                            Type = TokenTypes.Operator,
-                            Column = tokenColumn,
-                            Row = tokenRow,
-                            Lexeme = currentLexeme
-                        };
+                            var newTokenType = (TokenTypes)_punctuationSymbols[currentLexeme.ToLower()];
+                            return new Token
+                            {
+                                Type = newTokenType,
+                                Lexeme = currentLexeme,
+                                Column = tokenColumn,
+                                Row = tokenRow
+                            };
+                        }
+                        if (_operators.ContainsKey(currentLexeme.ToLower()))
+                        {
+                            var newTokenType = (TokenTypes)_operators[currentLexeme.ToLower()];
+                            return new Token
+                            {
+                                Type = newTokenType,
+                                Lexeme = currentLexeme,
+                                Column = tokenColumn,
+                                Row = tokenRow
+                            };
+                        }
+                        break;
                     case 6:
                         return  new Token {Type = TokenTypes.EOF, Column = tokenColumn,Lexeme = currentLexeme,Row = tokenRow};
                     case 7:

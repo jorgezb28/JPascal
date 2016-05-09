@@ -15,7 +15,31 @@ namespace JPascalCompiler.Lexer
         Float,
         ReservedWord,
         Operator,
-        PunctuationSymbol
+        PunctuationSymbol,
+        Char,
+        String,
+        Boolean,
+        Type,
+        Array,
+        Of,
+        Var,
+        True,
+        False,
+        OpEquals,
+        OpSum,
+        OpSub,
+        OpMult,
+        OpDivr,
+        Opdiv,
+        OpMod,
+        OpAnd,
+        OpNot,
+        OpOr,
+        PsOpenBracket,
+        PsCloseBracket,
+        PsArrayRange,
+        PsComa,
+        PsSentenseEnd
     }
 
     public class Token
