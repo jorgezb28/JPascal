@@ -493,7 +493,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 103
 this.ScenarioSetup(scenarioInfo);
 #line 104
- testRunner.Given("I have an input of \'type vector = array [ 0..24] of float;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have an input of \'type vector = array[ 0 .. 24] of float;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 105
  testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -535,37 +535,37 @@ this.ScenarioSetup(scenarioInfo);
             table12.AddRow(new string[] {
                         "PsArrayRange",
                         "..",
-                        "22",
+                        "23",
                         "0"});
             table12.AddRow(new string[] {
                         "Integer",
                         "24",
-                        "24",
+                        "26",
                         "0"});
             table12.AddRow(new string[] {
                         "PsCloseBracket",
                         "]",
-                        "27",
+                        "28",
                         "0"});
             table12.AddRow(new string[] {
                         "Of",
                         "of",
-                        "29",
+                        "30",
                         "0"});
             table12.AddRow(new string[] {
                         "Float",
                         "float",
-                        "31",
+                        "33",
                         "0"});
             table12.AddRow(new string[] {
                         "PsSentenseEnd",
                         ";",
-                        "35",
+                        "38",
                         "0"});
             table12.AddRow(new string[] {
                         "EOF",
                         "$",
-                        "36",
+                        "39",
                         "0"});
 #line 106
  testRunner.Then("the result should be", ((string)(null)), table12, "Then ");

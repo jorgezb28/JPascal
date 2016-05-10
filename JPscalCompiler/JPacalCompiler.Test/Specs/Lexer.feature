@@ -101,7 +101,7 @@ Scenario: Source code have an mult aritmethic operation
 		| EOF     | $      | 6      | 0   |
 
 Scenario: Source code have an unidimensional array 
-	Given I have an input of 'type vector = array [ 0..24] of float;'
+	Given I have an input of 'type vector = array[ 0 .. 24] of float;'
 	When We Tokenize
 	Then the result should be 
 		| Type           | Lexeme | Column | Row |
@@ -111,10 +111,10 @@ Scenario: Source code have an unidimensional array
 		| Array          | array  | 14     | 0   |
 		| PsOpenBracket  | [      | 19     | 0   |
 		| Integer        | 0      | 21     | 0   |
-		| PsArrayRange   | ..     | 22     | 0   |
-		| Integer        | 24     | 24     | 0   |
-		| PsCloseBracket | ]      | 27     | 0   |
-		| Of             | of     | 29     | 0   |
-		| Float          | float  | 31     | 0   |
-		| PsSentenseEnd  | ;      | 35     | 0   |
-		| EOF            | $      | 36     | 0   |
+		| PsArrayRange   | ..     | 23     | 0   |
+		| Integer        | 24     | 26     | 0   |
+		| PsCloseBracket | ]      | 28     | 0   |
+		| Of             | of     | 30     | 0   |
+		| Float          | float  | 33     | 0   |
+		| PsSentenseEnd  | ;      | 38     | 0   |
+		| EOF            | $      | 39     | 0   |

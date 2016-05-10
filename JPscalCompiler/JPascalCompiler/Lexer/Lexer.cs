@@ -274,7 +274,7 @@ namespace JPascalCompiler.Lexer
                     case 8:
                         return new Token
                         {
-                            Type = TokenTypes.PunctuationSymbol,
+                            Type = TokenTypes.PsArrayRange,
                             Lexeme = currentLexeme,
                             Column = tokenColumn,
                             Row = tokenRow
