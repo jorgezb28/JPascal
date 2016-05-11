@@ -118,3 +118,26 @@ Scenario: Source code have an unidimensional array
 		| Float          | float  | 33     | 0   |
 		| PsSentenseEnd  | ;      | 38     | 0   |
 		| EOF            | $      | 39     | 0   |
+
+Scenario: Source code has an record
+	Given I have the next record definition:
+	| Sentences       |
+	| type            |
+	| Books = record  |
+	| Title : string; |
+	| end;            |
+	When We tokenize
+	Then the multiline result should be
+         | Type          | Lexeme | Column | Row |
+         | Type          | type   | 0      | 0   |
+         | Id            | Books  | 0      | 1   |
+         | OpEquals      | =      | 6      | 1   |
+         | Record        | record | 8      | 1   |
+         | Id            | Title  | 0      | 2   |
+         | PsColon       | :      | 6      | 2   |
+         | String        | string | 8      | 2   |
+         | PsSentenseEnd | ;      | 14     | 2   |
+         | End           | end    | 0      | 3   |
+         | PsSentenseEnd | ;      | 3      | 3   |
+         | EOF           | $      | 4      | 3   |
+		 

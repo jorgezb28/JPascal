@@ -572,6 +572,96 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Source code has an record")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Lexer")]
+        public virtual void SourceCodeHasAnRecord()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code has an record", ((string[])(null)));
+#line 122
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table13.AddRow(new string[] {
+                        "type"});
+            table13.AddRow(new string[] {
+                        "Books = record"});
+            table13.AddRow(new string[] {
+                        "Title : string;"});
+            table13.AddRow(new string[] {
+                        "end;"});
+#line 123
+ testRunner.Given("I have the next record definition:", ((string)(null)), table13, "Given ");
+#line 129
+ testRunner.When("We tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Type",
+                        "Lexeme",
+                        "Column",
+                        "Row"});
+            table14.AddRow(new string[] {
+                        "Type",
+                        "type",
+                        "0",
+                        "0"});
+            table14.AddRow(new string[] {
+                        "Id",
+                        "Books",
+                        "0",
+                        "1"});
+            table14.AddRow(new string[] {
+                        "OpEquals",
+                        "=",
+                        "6",
+                        "1"});
+            table14.AddRow(new string[] {
+                        "Record",
+                        "record",
+                        "8",
+                        "1"});
+            table14.AddRow(new string[] {
+                        "Id",
+                        "Title",
+                        "0",
+                        "2"});
+            table14.AddRow(new string[] {
+                        "PsColon",
+                        ":",
+                        "6",
+                        "2"});
+            table14.AddRow(new string[] {
+                        "String",
+                        "string",
+                        "8",
+                        "2"});
+            table14.AddRow(new string[] {
+                        "PsSentenseEnd",
+                        ";",
+                        "14",
+                        "2"});
+            table14.AddRow(new string[] {
+                        "End",
+                        "end",
+                        "0",
+                        "3"});
+            table14.AddRow(new string[] {
+                        "PsSentenseEnd",
+                        ";",
+                        "3",
+                        "3"});
+            table14.AddRow(new string[] {
+                        "EOF",
+                        "$",
+                        "4",
+                        "3"});
+#line 130
+ testRunner.Then("the multiline result should be", ((string)(null)), table14, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

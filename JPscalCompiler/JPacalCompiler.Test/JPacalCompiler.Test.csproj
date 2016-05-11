@@ -65,6 +65,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Steps\LexerSteps.cs" />
+    <Compile Include="Steps\MultilineLexerSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

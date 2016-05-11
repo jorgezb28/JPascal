@@ -39,7 +39,11 @@ namespace JPascalCompiler.Lexer
         PsCloseBracket,
         PsArrayRange,
         PsComa,
-        PsSentenseEnd
+        PsSentenseEnd,
+        Record,
+        PsColon,
+        PsAssignment,
+        End
     }
 
     public class Token

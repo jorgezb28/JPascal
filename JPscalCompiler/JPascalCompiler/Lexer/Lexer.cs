@@ -36,7 +36,9 @@ namespace JPascalCompiler.Lexer
                 { "]",TokenTypes.PsCloseBracket},
                 { ".." ,TokenTypes.PsArrayRange},
                 { ",",TokenTypes.PsComa},
-                { ";",TokenTypes.PsSentenseEnd}
+                { ";",TokenTypes.PsSentenseEnd},
+                {":", TokenTypes.PsColon},
+                {":=",TokenTypes.PsAssignment}
             };
         }
 
@@ -67,14 +69,16 @@ namespace JPascalCompiler.Lexer
                 {"int", TokenTypes.Integer},
                 {"float",TokenTypes.Float },
                 {"char",TokenTypes.Char },
-                {"strig",TokenTypes.String },
+                {"string",TokenTypes.String },
                 {"boolean",TokenTypes.Boolean},
                 {"type",TokenTypes.Type},
                 {"array",TokenTypes.Array},
                 {"of",TokenTypes.Of},
                 {"var",TokenTypes.Var },
                 {"true",TokenTypes.True},
-                {"false",TokenTypes.False }
+                {"false",TokenTypes.False },
+                {"record",TokenTypes.Record },
+                {"end",TokenTypes.End}
             };
         }
 
@@ -102,6 +106,11 @@ namespace JPascalCompiler.Lexer
                         {
                             state = 0;
                             currentLexeme = "";
+                            if (_currentSymbol.Character == '\n')
+                            {
+                                tokenColumn = 0;
+                                tokenRow++;
+                            }
                             _currentSymbol = CodeContent.NextCharacter();
                         }
                         else if (char.IsLetter(_currentSymbol.Character))
@@ -121,22 +130,30 @@ namespace JPascalCompiler.Lexer
                             _currentSymbol = CodeContent.NextCharacter();
                         }
                         else if (_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
-                            _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString()))
+                                 _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString()))
                         {
                             state = 5;
                             tokenColumn = _currentSymbol.Column;
                             tokenRow = _currentSymbol.Row;
                             currentLexeme += _currentSymbol.Character;
                             _currentSymbol = CodeContent.NextCharacter();
-                        }else if (  _currentSymbol.Character =='.')
+                        }
+                        else if (_currentSymbol.Character == '.')
                         {
                             state = 7;
                             tokenColumn = _currentSymbol.Column;
                             tokenRow = _currentSymbol.Row;
                             currentLexeme += _currentSymbol.Character;
                             _currentSymbol = CodeContent.NextCharacter();
+                        }else if (_currentSymbol.Character == ':')
+                        {
+                            state = 9;
+                            tokenColumn = _currentSymbol.Column;
+                            tokenRow = _currentSymbol.Row;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
                         }
-                 
+
 
 
                         break;
@@ -279,7 +296,32 @@ namespace JPascalCompiler.Lexer
                             Column = tokenColumn,
                             Row = tokenRow
                         };
-                        
+                    case 9:
+                        if (_currentSymbol.Character =='=')
+                        {
+                            state = 10;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else
+                        {
+                            return new Token
+                            {
+                                Type = TokenTypes.PsColon,
+                                Lexeme = currentLexeme,
+                                Column = tokenColumn,
+                                Row = tokenRow
+                            };
+                        }
+                        break;
+                    case 10:
+                            return new Token
+                            {
+                                Type = TokenTypes.PsAssignment,
+                                Lexeme = currentLexeme,
+                                Column = tokenColumn,
+                                Row = tokenRow
+                            };
                     default:
                         break;
                 }
