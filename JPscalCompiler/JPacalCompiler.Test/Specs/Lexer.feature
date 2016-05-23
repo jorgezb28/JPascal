@@ -119,6 +119,39 @@ Scenario: Source code have an unidimensional array
 		| PsSentenseEnd  | ;      | 38     | 0   |
 		| EOF            | $      | 39     | 0   |
 
+Scenario: Source code have an major relational operation 
+	Given I have an input of '3>4 and 1>=1'
+	When We Tokenize
+	Then the result should be 
+		| Type                | Lexeme | Column | Row |
+		| Integer             | 3      | 0      | 0   |
+		| GreaterThan         | >      | 1      | 0   |
+		| Integer             | 4      | 2      | 0   |
+		| OpAnd               | and    | 4      | 0   |
+		| Integer             | 1      | 8      | 0   |
+		| GreaterThanOrEquals | >=     | 9      | 0   |
+		| Integer             | 1      | 11     | 0   |
+		| EOF                 | $      | 12     | 0   |
+
+Scenario: Source code have a less relational operation 
+	Given I have an input of '3<4 and 1<=1 or 4<>5'
+	When We Tokenize
+	Then the result should be 
+		| Type               | Lexeme | Column | Row |
+		| Integer            | 3      | 0      | 0   |
+		| OpLessThan         | <      | 1      | 0   |
+		| Integer            | 4      | 2      | 0   |
+		| OpAnd              | and    | 4      | 0   |
+		| Integer            | 1      | 8      | 0   |
+		| OpLessThanOrEquals | <=     | 9      | 0   |
+		| Integer            | 1      | 11     | 0   |
+		| OpOr               | or     | 13     | 0   |
+		| Integer            | 4      | 16     | 0   |
+		| OpNotEquals        | <>     | 17     | 0   |
+		| Integer            | 5      | 19     | 0   |
+		| EOF                | $      | 20     | 0   |
+		
+
 Scenario: Source code has an record
 	Given I have the next record definition:
 	| Sentences       |

@@ -43,7 +43,13 @@ namespace JPascalCompiler.Lexer
         Record,
         PsColon,
         PsAssignment,
-        End
+        End,
+        OpGreaterThan,
+        OpGreaterThanOrEquals,
+        OpLessThan,
+        OpLessThanOrEquals,
+        BeginPascalCode,
+        OpNotEquals
     }
 
     public class Token

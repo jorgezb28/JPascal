@@ -56,8 +56,13 @@ namespace JPascalCompiler.Lexer
                 {"mod",TokenTypes.OpMod},
                 {"and", TokenTypes.OpAnd},
                 {"not",TokenTypes.OpNot},
-                {"or", TokenTypes.OpOr }
-
+                {"or", TokenTypes.OpOr },
+                {">", TokenTypes.OpGreaterThan },
+                {">=", TokenTypes.OpGreaterThanOrEquals },
+                {"<", TokenTypes.OpLessThan },
+                {"<=", TokenTypes.OpLessThanOrEquals },
+                {"<%", TokenTypes.BeginPascalCode},
+                {"<>", TokenTypes.OpNotEquals}
             };
         }
 
@@ -121,7 +126,7 @@ namespace JPascalCompiler.Lexer
                             currentLexeme += _currentSymbol.Character;
                             _currentSymbol = CodeContent.NextCharacter();
                         }
-                        else if (char.IsDigit(_currentSymbol.Character))
+                        else if (char.IsDigit(_currentSymbol.Character) )
                         {
                             state = 2;
                             tokenRow = _currentSymbol.Row;
@@ -129,8 +134,9 @@ namespace JPascalCompiler.Lexer
                             currentLexeme += _currentSymbol.Character;
                             _currentSymbol = CodeContent.NextCharacter();
                         }
-                        else if (_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
-                                 _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString()))
+                        else if ((_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
+                                 _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString())) 
+                            && _currentSymbol.Character != '>' && _currentSymbol.Character != '<')
                         {
                             state = 5;
                             tokenColumn = _currentSymbol.Column;
@@ -148,6 +154,21 @@ namespace JPascalCompiler.Lexer
                         }else if (_currentSymbol.Character == ':')
                         {
                             state = 9;
+                            tokenColumn = _currentSymbol.Column;
+                            tokenRow = _currentSymbol.Row;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }else if (_currentSymbol.Character == '>')
+                        {
+                            state = 11;
+                            tokenColumn = _currentSymbol.Column;
+                            tokenRow = _currentSymbol.Row;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else if (_currentSymbol.Character == '<')
+                        {
+                            state = 13;
                             tokenColumn = _currentSymbol.Column;
                             tokenRow = _currentSymbol.Row;
                             currentLexeme += _currentSymbol.Character;
@@ -322,6 +343,85 @@ namespace JPascalCompiler.Lexer
                                 Column = tokenColumn,
                                 Row = tokenRow
                             };
+                    case 11:
+                        if (_currentSymbol.Character == '=')
+                        {
+                            state = 12;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else
+                        {
+                            return new Token
+                            {
+                                Column = tokenColumn,
+                                Row = tokenRow,
+                                Lexeme = currentLexeme,
+                                Type = TokenTypes.OpGreaterThan
+                            };
+                        }
+                        break;
+                    case 12:
+                        return new Token
+                        {
+                            Column = tokenColumn,
+                            Row = tokenRow,
+                            Lexeme = currentLexeme,
+                            Type = TokenTypes.OpGreaterThanOrEquals
+                        };
+                    case 13:
+                        if (_currentSymbol.Character == '=')
+                        {
+                            state = 14;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else if (_currentSymbol.Character == '%')
+                        {
+                            state = 15;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else if (_currentSymbol.Character == '>')
+                        {
+                            state = 16;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else{
+                            return new Token
+                            {
+                                Column = tokenColumn,
+                                Row = tokenRow,
+                                Lexeme = currentLexeme,
+                                Type = TokenTypes.OpLessThan
+                            };
+                        }
+                        break;
+                    case 14:
+                        return new Token
+                        {
+                            Column = tokenColumn,
+                            Row = tokenRow,
+                            Lexeme = currentLexeme,
+                            Type = TokenTypes.OpLessThanOrEquals
+                        };
+                    case 15:
+                        return new Token
+                        {
+                            Column = tokenColumn,
+                            Row = tokenRow,
+                            Lexeme = currentLexeme,
+                            Type = TokenTypes.BeginPascalCode
+                        };
+                    case 16:
+                        return new Token
+                        {
+                            Column = tokenColumn,
+                            Row = tokenRow,
+                            Lexeme = currentLexeme,
+                            Type = TokenTypes.OpNotEquals
+                        };
                     default:
                         break;
                 }
