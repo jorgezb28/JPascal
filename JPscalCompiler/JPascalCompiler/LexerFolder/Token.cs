@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JPascalCompiler.Lexer
+﻿namespace JPascalCompiler.LexerFolder
 {
 
     public enum TokenTypes
@@ -49,7 +43,10 @@ namespace JPascalCompiler.Lexer
         OpLessThan,
         OpLessThanOrEquals,
         BeginPascalCode,
-        OpNotEquals
+        OpNotEquals,
+        EndPascalCode,
+        PsOpenParentesis,
+        PsCloseParentesis
     }
 
     public class Token

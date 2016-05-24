@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using JPascalCompiler.Lexer;
+using JPascalCompiler.LexerFolder;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TechTalk.SpecFlow;
 

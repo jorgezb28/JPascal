@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace JPascalCompiler.Lexer
+namespace JPascalCompiler.LexerFolder
 {
     [Serializable]
     internal class LexicalExcpetion : Exception

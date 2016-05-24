@@ -1,4 +1,4 @@
-﻿namespace JPascalCompiler.Lexer
+﻿namespace JPascalCompiler.LexerFolder
 {
     public class Symbol
     {

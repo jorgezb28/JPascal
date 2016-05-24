@@ -100,6 +100,18 @@ Scenario: Source code have an mult aritmethic operation
 		| Integer | 5      | 5      | 0   |
 		| EOF     | $      | 6      | 0   |
 
+Scenario: Source code have a comment
+	Given I have an input of '(10 * 5)(*comentario*)'
+	When We Tokenize
+	Then the result should be 
+		| Type              | Lexeme | Column | Row |
+		| PsOpenParentesis  | (      | 0      | 0   |
+		| Integer           | 10     | 1      | 0   |
+		| OpMult            | *      | 4      | 0   |
+		| Integer           | 5      | 6      | 0   |
+		| PsCloseParentesis | )      | 7      | 0   |
+		| EOF               | $      | 22     | 0   |
+
 Scenario: Source code have an unidimensional array 
 	Given I have an input of 'type vector = array[ 0 .. 24] of float;'
 	When We Tokenize
@@ -125,11 +137,11 @@ Scenario: Source code have an major relational operation
 	Then the result should be 
 		| Type                | Lexeme | Column | Row |
 		| Integer             | 3      | 0      | 0   |
-		| GreaterThan         | >      | 1      | 0   |
+		| OpGreaterThan       | >      | 1      | 0   |
 		| Integer             | 4      | 2      | 0   |
 		| OpAnd               | and    | 4      | 0   |
 		| Integer             | 1      | 8      | 0   |
-		| GreaterThanOrEquals | >=     | 9      | 0   |
+		| OpGreaterThanOrEquals | >=     | 9      | 0   |
 		| Integer             | 1      | 11     | 0   |
 		| EOF                 | $      | 12     | 0   |
 
@@ -173,4 +185,20 @@ Scenario: Source code has an record
          | End           | end    | 0      | 3   |
          | PsSentenseEnd | ;      | 3      | 3   |
          | EOF           | $      | 4      | 3   |
+
+Scenario: Source code has an pascal code tag
+	Given I have the next record definition:
+	| Sentences      |
+	| <%             |
+	| Books = record |
+	| %>             |
+	When We tokenize
+	Then the multiline result should be
+         | Type            | Lexeme | Column | Row |
+         | BeginPascalCode | <%     | 0      | 0   |
+         | Id              | Books  | 0      | 1   |
+         | OpEquals        | =      | 6      | 1   |
+         | Record          | record | 8      | 1   |
+         | EndPascalCode   |%>     | 0      | 2   |
+         | EOF             | $      | 2      | 2   |
 		 

@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
-namespace JPascalCompiler.Lexer
+namespace JPascalCompiler.LexerFolder
 {
     public class Lexer
     {
@@ -38,7 +32,9 @@ namespace JPascalCompiler.Lexer
                 { ",",TokenTypes.PsComa},
                 { ";",TokenTypes.PsSentenseEnd},
                 {":", TokenTypes.PsColon},
-                {":=",TokenTypes.PsAssignment}
+                {":=",TokenTypes.PsAssignment},
+                {"(",TokenTypes.PsOpenParentesis},
+                {")",TokenTypes.PsCloseParentesis}
             };
         }
 
@@ -136,7 +132,7 @@ namespace JPascalCompiler.Lexer
                         }
                         else if ((_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
                                  _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString())) 
-                            && _currentSymbol.Character != '>' && _currentSymbol.Character != '<')
+                            && _currentSymbol.Character != '>' && _currentSymbol.Character != '<' && _currentSymbol.Character != '(')
                         {
                             state = 5;
                             tokenColumn = _currentSymbol.Column;
@@ -169,6 +165,22 @@ namespace JPascalCompiler.Lexer
                         else if (_currentSymbol.Character == '<')
                         {
                             state = 13;
+                            tokenColumn = _currentSymbol.Column;
+                            tokenRow = _currentSymbol.Row;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else if (_currentSymbol.Character == '%')
+                        {
+                            state = 17;
+                            tokenColumn = _currentSymbol.Column;
+                            tokenRow = _currentSymbol.Row;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else if (_currentSymbol.Character == '(')
+                        {
+                            state = 19;
                             tokenColumn = _currentSymbol.Column;
                             tokenRow = _currentSymbol.Row;
                             currentLexeme += _currentSymbol.Character;
@@ -422,6 +434,74 @@ namespace JPascalCompiler.Lexer
                             Lexeme = currentLexeme,
                             Type = TokenTypes.OpNotEquals
                         };
+                    case  17:
+                        if (_currentSymbol.Character == '>')
+                        {
+                            state = 18;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else
+                        {
+                            throw new LexicalExcpetion("Unsupported token:" + currentLexeme + _currentSymbol.Character + " at col:" + tokenColumn + " and row:" + tokenRow);   
+                        }
+                        break;
+                    case 18:
+                        return new Token
+                        {
+                            Column = tokenColumn,
+                            Row = tokenRow,
+                            Lexeme = currentLexeme,
+                            Type = TokenTypes.EndPascalCode
+                        };
+                    case 19:
+                        if (_currentSymbol.Character == '*')
+                        {
+                            state = 20;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else
+                        {
+                            return new Token
+                            {
+                                Column = tokenColumn,
+                                Row = tokenRow,
+                                Lexeme = currentLexeme,
+                                Type = TokenTypes.PsOpenParentesis
+                            };
+                        }
+                        break;
+
+                    case 20:
+                        if (_currentSymbol.Character =='*')
+                        {
+                            state = 21;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }else if (_currentSymbol.Character != '*' || _currentSymbol.Character!='\n' || _currentSymbol.Character!='$')
+                        {
+                            state = 20;
+                            currentLexeme = "";
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        break;
+                    case 21:
+                        if (_currentSymbol.Character == ')')
+                        {
+                            state = 22;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else
+                        {
+                            throw new LexicalExcpetion("Unsupported token:" + currentLexeme + _currentSymbol.Character + " at col:" + tokenColumn + " and row:" + tokenRow);   
+                        }
+                        break;
+                    case 22:
+                        state = 0;
+                        _currentSymbol = CodeContent.NextCharacter();
+                        break;
+                       
                     default:
                         break;
                 }

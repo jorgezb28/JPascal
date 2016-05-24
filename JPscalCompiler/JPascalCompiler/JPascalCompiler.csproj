@@ -43,11 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lexer\Lexer.cs" />
-    <Compile Include="Lexer\LexicalExcpetion.cs" />
-    <Compile Include="Lexer\SourceCode.cs" />
-    <Compile Include="Lexer\Symbol.cs" />
-    <Compile Include="Lexer\Token.cs" />
+    <Compile Include="LexerFolder\Lexer.cs" />
+    <Compile Include="LexerFolder\LexicalExcpetion.cs" />
+    <Compile Include="LexerFolder\SourceCode.cs" />
+    <Compile Include="LexerFolder\Symbol.cs" />
+    <Compile Include="LexerFolder\Token.cs" />
+    <Compile Include="Parser\Parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
