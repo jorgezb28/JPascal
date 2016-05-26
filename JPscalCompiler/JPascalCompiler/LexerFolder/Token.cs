@@ -24,7 +24,7 @@
         OpSub,
         OpMult,
         OpDivr,
-        Opdiv,
+        OpDiv,
         OpMod,
         OpAnd,
         OpNot,

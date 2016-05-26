@@ -48,7 +48,7 @@ namespace JPascalCompiler.LexerFolder
                 {"-",TokenTypes.OpSub},
                 {"*",TokenTypes.OpMult},
                 {"/", TokenTypes.OpDivr},
-                {"div", TokenTypes.Opdiv},
+                {"div", TokenTypes.OpDiv},
                 {"mod",TokenTypes.OpMod},
                 {"and", TokenTypes.OpAnd},
                 {"not",TokenTypes.OpNot},
