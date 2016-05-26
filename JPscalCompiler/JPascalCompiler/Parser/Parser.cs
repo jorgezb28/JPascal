@@ -59,7 +59,7 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Var)
             {
                 _currentToken = _lexer.GetNextToken();
-                FactorComunId();    
+                return FactorComunId();    
             }
             else
             {
@@ -67,7 +67,7 @@ namespace JPascalCompiler.Parser
             }
         }
 
-        private void FactorComunId()
+        private bool FactorComunId()
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
@@ -77,6 +77,7 @@ namespace JPascalCompiler.Parser
             else
             {
                 _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, column:"+_currentToken.Column+" , "+_currentToken.Row);
+                return false;
             }
         }
 
@@ -122,7 +123,8 @@ namespace JPascalCompiler.Parser
             }
             else
             {
-                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: = at column, row: " + _currentToken.Column + " , " + _currentToken.Row);
+                retur
+                //_parserSyntaxErrors.Add("Syntax Error.Expected symbol: = at column, row: " + _currentToken.Column + " , " + _currentToken.Row);
             }
         }
 
