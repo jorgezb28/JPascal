@@ -10,32 +10,38 @@ namespace JPascalCompiler.Parser
     {
         private Lexer _lexer;
         private Token _currentToken;
-        private List<string> _parserSyntaxErrors;
+        public List<string> _parserSyntaxErrors;
 
         public Parser(Lexer lexer)
         {
-            this._lexer = lexer;
+            _lexer = lexer;
             _parserSyntaxErrors = new List<string>();
         }
 
-        public void Parse()
+        public bool Parse()
         {
             _currentToken = _lexer.GetNextToken();
-            LS();
+            //LS();
+            if (LS()) //el codigo no tuvo errores de compilacion
+            {
+                return true;
+            }
 
             if (_currentToken.Type != TokenTypes.EOF)
              {
                  _parserSyntaxErrors.Add("Se esperaba EOF");
-            }
+                 return false;
+             }
+            return true; //no hubo error de compilacion
         }
 
-        private void LS()
+        private bool LS()
         {
             if(S())
             {
                 LS();
             }
-            
+            return false;// ojo validar esto
         }
 
         private bool S()
@@ -44,14 +50,14 @@ namespace JPascalCompiler.Parser
             {
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
-
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
                 }
-                else
-                {
-                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ; at column, row: "+_currentToken.Column+" , "+_currentToken.Row);
-                }
+                
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: "+_currentToken.Column+" , "+_currentToken.Row);
+                return false;
             }
-
+            return false;
         }
 
         private bool Declaracion()
@@ -61,10 +67,9 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 return FactorComunId();    
             }
-            else
-            {
-                throw new SyntaxException("Syntax error. Expected word: '"+_currentToken.Lexeme+"' at colum:"+_currentToken.Column+" , row: "+_currentToken.Row);
-            }
+
+            //_parserSyntaxErrors.Add("Syntax error. Expected word: 'var' at colum:"+_currentToken.Column+" , row: "+_currentToken.Row);
+            return false;
         }
 
         private bool FactorComunId()
@@ -72,16 +77,14 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Id)
             {
                 _currentToken = _lexer.GetNextToken();
-                Y();
+                return Y();
             }
-            else
-            {
-                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, column:"+_currentToken.Column+" , "+_currentToken.Row);
-                return false;
-            }
+
+            _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:"+_currentToken.Column+" , "+_currentToken.Row);
+            return false;
         }
 
-        private void Y()
+        private bool Y()
         {
             if (_currentToken.Type ==TokenTypes.PsColon)
             {
@@ -89,62 +92,59 @@ namespace JPascalCompiler.Parser
                 if (_currentToken.Type == TokenTypes.Id)
                 {
                     _currentToken = _lexer.GetNextToken();
-                    AsignarValor();
+                    return AsignarValor();
                 }
-                else
-                {
-                    _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, column:" + _currentToken.Column + " , " + _currentToken.Row);
-                }
+                
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:" + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
             }
-            else
+            
+            if (IdOpcional())
             {
-                IdOpcional();
                 if (_currentToken.Type == TokenTypes.PsColon)
                 {
                     _currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.Id)
                     {
-                        return;
-                    }//error
-
-                }//exception
-
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:" + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ':' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
             }
-
-            
+            _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ':' or ',' at: " + _currentToken.Column + " , " + _currentToken.Row);
+            return false;
         }
 
-        private void AsignarValor()
+        private bool AsignarValor()
         {
             if (_currentToken.Type == TokenTypes.OpEquals)
             {
                 _currentToken = _lexer.GetNextToken();
-                Expression();
+                return Expression();
             }
-            else
-            {
-                retur
-                //_parserSyntaxErrors.Add("Syntax Error.Expected symbol: = at column, row: " + _currentToken.Column + " , " + _currentToken.Row);
-            }
+            //_parserSyntaxErrors.Add("Syntax Error.Expected symbol: '=' at column, row: " + _currentToken.Column + " , " + _currentToken.Row);
+            return true; //epsilon
         }
 
-        private void Expression()
+        private bool Expression()
         {
-            RelationalExpresion();
+            return RelationalExpresion();
         }
 
-        private void RelationalExpresion()
+        private bool RelationalExpresion()
         {
-            ExpresionAdicion();
-            RelationalExpresionP();
+            return ExpresionAdicion() || RelationalExpresionP();
         }
 
         private bool RelationalExpresionP()
         {
             if (OpRelational())
             {
-                ExpresionAdicion();
-                RelationalExpresionP();
+                return ExpresionAdicion() || RelationalExpresionP();
             }
             return false;
         }
@@ -188,18 +188,16 @@ namespace JPascalCompiler.Parser
             
         }
 
-        private void ExpresionAdicion()
+        private bool ExpresionAdicion()
         {
-            ExpresionMul();
-            ExpresionAdicionP();
+            return ExpresionMul() || ExpresionAdicionP();
         }
 
         private bool ExpresionAdicionP()
         {
             if (OpAdicion())
             {
-                ExpresionMul();
-                ExpresionAdicionP();
+                return ExpresionMul() || ExpresionAdicionP();
             }
             return false;
         }
@@ -227,18 +225,16 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private void ExpresionMul()
+        private bool ExpresionMul()
         {
-            ExpresionUnary();
-            ExpresionMulP();
+            return ExpresionUnary() || ExpresionMulP();
         }
 
         private bool ExpresionMulP()
         {
             if (OpMul())
             {
-                ExpresionUnary();
-                ExpresionMulP();
+                return ExpresionUnary() || ExpresionMulP();
             }
             return false;
         }
@@ -277,16 +273,16 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private void ExpresionUnary()
+        private bool ExpresionUnary()
         {
             if (_currentToken.Type == TokenTypes.OpNot)
             {
                 _currentToken = _lexer.GetNextToken();
-                Factor();
+                return Factor();
             }
             else
             {
-                Factor();
+                return Factor();
             }
         }
 
@@ -316,22 +312,25 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private void IdOpcional()
+        private bool IdOpcional()
         {
             if (_currentToken.Type == TokenTypes.PsComa)
             {
                 _currentToken = _lexer.GetNextToken();
-                ListaId();
+                return ListaId();
             }
+            return true; //epsilon
         }
 
-        private void ListaId()
+        private bool ListaId()
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
                 _currentToken = _lexer.GetNextToken();
-                IdOpcional();
+                return IdOpcional();
             }
+            _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:" + _currentToken.Column + " , " + _currentToken.Row);
+            return false;
         }
     }
 

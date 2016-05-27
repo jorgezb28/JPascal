@@ -64,8 +64,14 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Specs\Parser.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Parser.feature</DependentUpon>
+    </Compile>
     <Compile Include="Steps\LexerSteps.cs" />
     <Compile Include="Steps\MultilineLexerSteps.cs" />
+    <Compile Include="Steps\ParserSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -73,6 +79,10 @@
     <None Include="Specs\Lexer.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Lexer.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Specs\Parser.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Parser.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
