@@ -485,15 +485,15 @@ this.ScenarioSetup(scenarioInfo);
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Source code have a comment")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Source code have an string assigment")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Lexer")]
-        public virtual void SourceCodeHaveAComment()
+        public virtual void SourceCodeHaveAnStringAssigment()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have a comment", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have an string assigment", ((string[])(null)));
 #line 103
 this.ScenarioSetup(scenarioInfo);
 #line 104
- testRunner.Given("I have an input of \'(10 * 5)(*comentario*)\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have an input of \'var s : string = \'patito\';\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 105
  testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -503,37 +503,101 @@ this.ScenarioSetup(scenarioInfo);
                         "Column",
                         "Row"});
             table12.AddRow(new string[] {
-                        "PsOpenParentesis",
-                        "(",
+                        "Var",
+                        "var",
                         "0",
                         "0"});
             table12.AddRow(new string[] {
                         "Id",
-                        "10",
-                        "1",
-                        "0"});
-            table12.AddRow(new string[] {
-                        "OpMult",
-                        "*",
+                        "s",
                         "4",
                         "0"});
             table12.AddRow(new string[] {
-                        "Id",
-                        "5",
+                        "PsColon",
+                        ":",
                         "6",
                         "0"});
             table12.AddRow(new string[] {
-                        "PsCloseParentesis",
-                        ")",
-                        "7",
+                        "Id",
+                        "string",
+                        "8",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "OpEquals",
+                        "=",
+                        "15",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "Id",
+                        "\'patito\'",
+                        "17",
+                        "0"});
+            table12.AddRow(new string[] {
+                        "PsSentenseEnd",
+                        ";",
+                        "25",
                         "0"});
             table12.AddRow(new string[] {
                         "EOF",
                         "$",
-                        "22",
+                        "26",
                         "0"});
 #line 106
  testRunner.Then("the result should be", ((string)(null)), table12, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Source code have a comment")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Lexer")]
+        public virtual void SourceCodeHaveAComment()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have a comment", ((string[])(null)));
+#line 117
+this.ScenarioSetup(scenarioInfo);
+#line 118
+ testRunner.Given("I have an input of \'(10 * 5)(*comentario*)\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 119
+ testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Type",
+                        "Lexeme",
+                        "Column",
+                        "Row"});
+            table13.AddRow(new string[] {
+                        "PsOpenParentesis",
+                        "(",
+                        "0",
+                        "0"});
+            table13.AddRow(new string[] {
+                        "Id",
+                        "10",
+                        "1",
+                        "0"});
+            table13.AddRow(new string[] {
+                        "OpMult",
+                        "*",
+                        "4",
+                        "0"});
+            table13.AddRow(new string[] {
+                        "Id",
+                        "5",
+                        "6",
+                        "0"});
+            table13.AddRow(new string[] {
+                        "PsCloseParentesis",
+                        ")",
+                        "7",
+                        "0"});
+            table13.AddRow(new string[] {
+                        "EOF",
+                        "$",
+                        "22",
+                        "0"});
+#line 120
+ testRunner.Then("the result should be", ((string)(null)), table13, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -544,85 +608,85 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void SourceCodeHaveAnUnidimensionalArray()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have an unidimensional array", ((string[])(null)));
-#line 115
+#line 129
 this.ScenarioSetup(scenarioInfo);
-#line 116
+#line 130
  testRunner.Given("I have an input of \'type vector = array[ 0 .. 24] of float;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 117
+#line 131
  testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
                         "Type",
                         "Lexeme",
                         "Column",
                         "Row"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Type",
                         "type",
                         "0",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Id",
                         "vector",
                         "5",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "OpEquals",
                         "=",
                         "12",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Array",
                         "array",
                         "14",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "PsOpenBracket",
                         "[",
                         "19",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Id",
                         "0",
                         "21",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "PsArrayRange",
                         "..",
                         "23",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Id",
                         "24",
                         "26",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "PsCloseBracket",
                         "]",
                         "28",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Of",
                         "of",
                         "30",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "Id",
                         "float",
                         "33",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "PsSentenseEnd",
                         ";",
                         "38",
                         "0"});
-            table13.AddRow(new string[] {
+            table14.AddRow(new string[] {
                         "EOF",
                         "$",
                         "39",
                         "0"});
-#line 118
- testRunner.Then("the result should be", ((string)(null)), table13, "Then ");
+#line 132
+ testRunner.Then("the result should be", ((string)(null)), table14, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -633,74 +697,10 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void SourceCodeHaveAnMajorRelationalOperation()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have an major relational operation", ((string[])(null)));
-#line 134
-this.ScenarioSetup(scenarioInfo);
-#line 135
- testRunner.Given("I have an input of \'3>4 and 1>=1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 136
- testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Type",
-                        "Lexeme",
-                        "Column",
-                        "Row"});
-            table14.AddRow(new string[] {
-                        "Id",
-                        "3",
-                        "0",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "OpGreaterThan",
-                        ">",
-                        "1",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "Id",
-                        "4",
-                        "2",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "OpAnd",
-                        "and",
-                        "4",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "Id",
-                        "1",
-                        "8",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "OpGreaterThanOrEquals",
-                        ">=",
-                        "9",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "Id",
-                        "1",
-                        "11",
-                        "0"});
-            table14.AddRow(new string[] {
-                        "EOF",
-                        "$",
-                        "12",
-                        "0"});
-#line 137
- testRunner.Then("the result should be", ((string)(null)), table14, "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Source code have a less relational operation")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Lexer")]
-        public virtual void SourceCodeHaveALessRelationalOperation()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have a less relational operation", ((string[])(null)));
 #line 148
 this.ScenarioSetup(scenarioInfo);
 #line 149
- testRunner.Given("I have an input of \'3<4 and 1<=1 or 4<>5\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have an input of \'3>4 and 1>=1\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 150
  testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
@@ -715,8 +715,8 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table15.AddRow(new string[] {
-                        "OpLessThan",
-                        "<",
+                        "OpGreaterThan",
+                        ">",
                         "1",
                         "0"});
             table15.AddRow(new string[] {
@@ -735,8 +735,8 @@ this.ScenarioSetup(scenarioInfo);
                         "8",
                         "0"});
             table15.AddRow(new string[] {
-                        "OpLessThanOrEquals",
-                        "<=",
+                        "OpGreaterThanOrEquals",
+                        ">=",
                         "9",
                         "0"});
             table15.AddRow(new string[] {
@@ -745,32 +745,96 @@ this.ScenarioSetup(scenarioInfo);
                         "11",
                         "0"});
             table15.AddRow(new string[] {
+                        "EOF",
+                        "$",
+                        "12",
+                        "0"});
+#line 151
+ testRunner.Then("the result should be", ((string)(null)), table15, "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Source code have a less relational operation")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Lexer")]
+        public virtual void SourceCodeHaveALessRelationalOperation()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code have a less relational operation", ((string[])(null)));
+#line 162
+this.ScenarioSetup(scenarioInfo);
+#line 163
+ testRunner.Given("I have an input of \'3<4 and 1<=1 or 4<>5\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 164
+ testRunner.When("We Tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Type",
+                        "Lexeme",
+                        "Column",
+                        "Row"});
+            table16.AddRow(new string[] {
+                        "Id",
+                        "3",
+                        "0",
+                        "0"});
+            table16.AddRow(new string[] {
+                        "OpLessThan",
+                        "<",
+                        "1",
+                        "0"});
+            table16.AddRow(new string[] {
+                        "Id",
+                        "4",
+                        "2",
+                        "0"});
+            table16.AddRow(new string[] {
+                        "OpAnd",
+                        "and",
+                        "4",
+                        "0"});
+            table16.AddRow(new string[] {
+                        "Id",
+                        "1",
+                        "8",
+                        "0"});
+            table16.AddRow(new string[] {
+                        "OpLessThanOrEquals",
+                        "<=",
+                        "9",
+                        "0"});
+            table16.AddRow(new string[] {
+                        "Id",
+                        "1",
+                        "11",
+                        "0"});
+            table16.AddRow(new string[] {
                         "OpOr",
                         "or",
                         "13",
                         "0"});
-            table15.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Id",
                         "4",
                         "16",
                         "0"});
-            table15.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "OpNotEquals",
                         "<>",
                         "17",
                         "0"});
-            table15.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "Id",
                         "5",
                         "19",
                         "0"});
-            table15.AddRow(new string[] {
+            table16.AddRow(new string[] {
                         "EOF",
                         "$",
                         "20",
                         "0"});
-#line 151
- testRunner.Then("the result should be", ((string)(null)), table15, "Then ");
+#line 165
+ testRunner.Then("the result should be", ((string)(null)), table16, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -781,86 +845,86 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void SourceCodeHasAnRecord()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code has an record", ((string[])(null)));
-#line 167
+#line 181
 this.ScenarioSetup(scenarioInfo);
 #line hidden
-            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
                         "Sentences"});
-            table16.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "type"});
-            table16.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "Books = record"});
-            table16.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "Title : string;"});
-            table16.AddRow(new string[] {
+            table17.AddRow(new string[] {
                         "end;"});
-#line 168
- testRunner.Given("I have the next record definition:", ((string)(null)), table16, "Given ");
-#line 174
+#line 182
+ testRunner.Given("I have the next record definition:", ((string)(null)), table17, "Given ");
+#line 188
  testRunner.When("We tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table17 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
                         "Type",
                         "Lexeme",
                         "Column",
                         "Row"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "Type",
                         "type",
                         "0",
                         "0"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "Id",
                         "Books",
                         "0",
                         "1"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "OpEquals",
                         "=",
                         "6",
                         "1"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "Record",
                         "record",
                         "8",
                         "1"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "Id",
                         "Title",
                         "0",
                         "2"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "PsColon",
                         ":",
                         "6",
                         "2"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "Id",
                         "string",
                         "8",
                         "2"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "PsSentenseEnd",
                         ";",
                         "14",
                         "2"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "End",
                         "end",
                         "0",
                         "3"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "PsSentenseEnd",
                         ";",
                         "3",
                         "3"});
-            table17.AddRow(new string[] {
+            table18.AddRow(new string[] {
                         "EOF",
                         "$",
                         "4",
                         "3"});
-#line 175
- testRunner.Then("the multiline result should be", ((string)(null)), table17, "Then ");
+#line 189
+ testRunner.Then("the multiline result should be", ((string)(null)), table18, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -871,59 +935,59 @@ this.ScenarioSetup(scenarioInfo);
         public virtual void SourceCodeHasAnPascalCodeTag()
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Source code has an pascal code tag", ((string[])(null)));
-#line 189
+#line 203
 this.ScenarioSetup(scenarioInfo);
 #line hidden
-            TechTalk.SpecFlow.Table table18 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
                         "Sentences"});
-            table18.AddRow(new string[] {
+            table19.AddRow(new string[] {
                         "<%"});
-            table18.AddRow(new string[] {
+            table19.AddRow(new string[] {
                         "Books = record"});
-            table18.AddRow(new string[] {
+            table19.AddRow(new string[] {
                         "%>"});
-#line 190
- testRunner.Given("I have the next record definition:", ((string)(null)), table18, "Given ");
-#line 195
+#line 204
+ testRunner.Given("I have the next record definition:", ((string)(null)), table19, "Given ");
+#line 209
  testRunner.When("We tokenize", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-            TechTalk.SpecFlow.Table table19 = new TechTalk.SpecFlow.Table(new string[] {
+            TechTalk.SpecFlow.Table table20 = new TechTalk.SpecFlow.Table(new string[] {
                         "Type",
                         "Lexeme",
                         "Column",
                         "Row"});
-            table19.AddRow(new string[] {
+            table20.AddRow(new string[] {
                         "BeginPascalCode",
                         "<%",
                         "0",
                         "0"});
-            table19.AddRow(new string[] {
+            table20.AddRow(new string[] {
                         "Id",
                         "Books",
                         "0",
                         "1"});
-            table19.AddRow(new string[] {
+            table20.AddRow(new string[] {
                         "OpEquals",
                         "=",
                         "6",
                         "1"});
-            table19.AddRow(new string[] {
+            table20.AddRow(new string[] {
                         "Record",
                         "record",
                         "8",
                         "1"});
-            table19.AddRow(new string[] {
+            table20.AddRow(new string[] {
                         "EndPascalCode",
                         "%>",
                         "0",
                         "2"});
-            table19.AddRow(new string[] {
+            table20.AddRow(new string[] {
                         "EOF",
                         "$",
                         "2",
                         "2"});
-#line 196
- testRunner.Then("the multiline result should be", ((string)(null)), table19, "Then ");
+#line 210
+ testRunner.Then("the multiline result should be", ((string)(null)), table20, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

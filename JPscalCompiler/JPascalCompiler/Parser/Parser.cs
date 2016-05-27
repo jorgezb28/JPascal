@@ -137,14 +137,18 @@ namespace JPascalCompiler.Parser
 
         private bool RelationalExpresion()
         {
-            return ExpresionAdicion() || RelationalExpresionP();
+            var ea = ExpresionAdicion();
+            var rep = RelationalExpresionP();
+            return ea || rep ;
         }
 
         private bool RelationalExpresionP()
         {
             if (OpRelational())
             {
-                return ExpresionAdicion() || RelationalExpresionP();
+                var ea = ExpresionAdicion();
+                var rep = RelationalExpresionP();
+                return  ea||rep ;
             }
             return false;
         }
@@ -190,14 +194,18 @@ namespace JPascalCompiler.Parser
 
         private bool ExpresionAdicion()
         {
-            return ExpresionMul() || ExpresionAdicionP();
+            var em = ExpresionMul();
+            var eap = ExpresionAdicionP();
+            return em || eap;
         }
 
         private bool ExpresionAdicionP()
         {
             if (OpAdicion())
             {
-                return ExpresionMul() || ExpresionAdicionP();
+                var em = ExpresionMul();
+                var eap = ExpresionAdicionP();
+                return em ||eap ;
             }
             return false;
         }
@@ -227,14 +235,18 @@ namespace JPascalCompiler.Parser
 
         private bool ExpresionMul()
         {
-            return ExpresionUnary() || ExpresionMulP();
+            var eu = ExpresionUnary();
+            var emp= ExpresionMulP();
+            return eu || emp;
         }
 
         private bool ExpresionMulP()
         {
             if (OpMul())
             {
-                return ExpresionUnary() || ExpresionMulP();
+                var eu = ExpresionUnary();
+                var emp =ExpresionMulP();
+                return eu || emp;
             }
             return false;
         }
@@ -280,10 +292,7 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 return Factor();
             }
-            else
-            {
-                return Factor();
-            }
+            return Factor();
         }
 
         private bool Factor()

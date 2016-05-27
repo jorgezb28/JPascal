@@ -34,7 +34,7 @@ namespace JPascalCompiler.LexerFolder
                 {":", TokenTypes.PsColon},
                 {":=",TokenTypes.PsAssignment},
                 {"(",TokenTypes.PsOpenParentesis},
-                {")",TokenTypes.PsCloseParentesis}
+                {")",TokenTypes.PsCloseParentesis},
             };
         }
 
@@ -181,6 +181,14 @@ namespace JPascalCompiler.LexerFolder
                         else if (_currentSymbol.Character == '(')
                         {
                             state = 19;
+                            tokenColumn = _currentSymbol.Column;
+                            tokenRow = _currentSymbol.Row;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        else if (_currentSymbol.Character == '\'')
+                        {
+                            state = 23;
                             tokenColumn = _currentSymbol.Column;
                             tokenRow = _currentSymbol.Row;
                             currentLexeme += _currentSymbol.Character;
@@ -503,6 +511,28 @@ namespace JPascalCompiler.LexerFolder
                         state = 0;
                         _currentSymbol = CodeContent.NextCharacter();
                         break;
+                    case 23:
+                        if (_currentSymbol.Character == '\'')
+                        {
+                            state = 24;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }else if (_currentSymbol.Character != '\'' || _currentSymbol.Character!='\n' || _currentSymbol.Character!='$')
+                        {
+                            state = 23;
+                            currentLexeme += _currentSymbol.Character;
+                            _currentSymbol = CodeContent.NextCharacter();
+                        }
+                        break;
+
+                    case 24:
+                        return new Token
+                        {
+                            Column = tokenColumn,
+                            Row = tokenRow,
+                            Lexeme = currentLexeme,
+                            Type = TokenTypes.Id
+                        };
                        
                     default:
                         break;

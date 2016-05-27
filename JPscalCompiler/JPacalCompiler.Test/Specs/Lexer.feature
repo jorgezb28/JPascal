@@ -100,6 +100,20 @@ Scenario: Source code have an mult aritmethic operation
 		| Id     | 5      | 5      | 0   |
 		| EOF    | $      | 6      | 0   |
 
+Scenario: Source code have an string assigment
+	Given I have an input of 'var s : string = 'patito';'
+	When We Tokenize
+	Then the result should be 
+		| Type          | Lexeme   | Column | Row |
+		| Var           | var      | 0      | 0   |
+		| Id            | s        | 4      | 0   |
+		| PsColon       | :        | 6      | 0   |
+		| Id            | string   | 8      | 0   |
+		| OpEquals      | =        | 15     | 0   |
+		| Id            | 'patito' | 17     | 0   |
+		| PsSentenseEnd | ;        | 25     | 0   |
+		| EOF           | $        | 26     | 0   |
+
 Scenario: Source code have a comment
 	Given I have an input of '(10 * 5)(*comentario*)'
 	When We Tokenize
