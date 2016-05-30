@@ -402,6 +402,74 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
             this.ScenarioCleanup();
         }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline simple case sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineSimpleCaseSentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline simple case sentence", ((string[])(null)));
+#line 117
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table10 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table10.AddRow(new string[] {
+                        "case place of"});
+            table10.AddRow(new string[] {
+                        "1: ShowMessage(\'sds\');"});
+            table10.AddRow(new string[] {
+                        "2: ShowMessage(sdds);"});
+            table10.AddRow(new string[] {
+                        "3: ShowMessage(sd.test);"});
+            table10.AddRow(new string[] {
+                        "else ShowMessage(sdsd);"});
+            table10.AddRow(new string[] {
+                        "end;"});
+#line 118
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table10, "Given ");
+#line 126
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 127
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline complex record sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineComplexRecordSentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline complex record sentence", ((string[])(null)));
+#line 129
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table11.AddRow(new string[] {
+                        "type TMember = record"});
+            table11.AddRow(new string[] {
+                        "firstname, lastname : string;"});
+            table11.AddRow(new string[] {
+                        "address: array [1 .. 3] of string;"});
+            table11.AddRow(new string[] {
+                        "phone: string;"});
+            table11.AddRow(new string[] {
+                        "birthdate: TDateTime;"});
+            table11.AddRow(new string[] {
+                        "paidCurrentSubscription: boolean;"});
+            table11.AddRow(new string[] {
+                        "end;"});
+#line 130
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table11, "Given ");
+#line 139
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 140
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
     }
 }
 #pragma warning restore

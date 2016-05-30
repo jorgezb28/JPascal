@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Lifetime;
@@ -100,7 +101,427 @@ namespace JPascalCompiler.Parser
                 return false;
             }
 
+            if (CASE())
+            {
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+
+            }
+            if (DECLARETYPE())
+            {
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
             return false;
+        }
+
+        private bool DECLARETYPE()
+        {
+            if (_currentToken.Type == TokenTypes.Type)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.OpEquals)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (TYPE())
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+
+        }
+
+        private bool TYPE()
+        {
+            if (ENUMERATEDTYPE())
+            {
+                return true;
+            }
+            if (TYPEDEF())
+            {
+                return true;
+            }
+            if (RECORD())
+            {
+                return true;
+            }
+            if (ARRAY())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool ARRAY()
+        {
+            if (_currentToken.Type == TokenTypes.Array)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.PsOpenBracket)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (LISTARANGOS())
+                    {
+                        if (_currentToken.Type == TokenTypes.PsCloseBracket)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            if (_currentToken.Type == TokenTypes.Of)
+                            {
+                                _currentToken = _lexer.GetNextToken();
+                                if (ARRAYTYPES())
+                                {
+                                    return true;
+                                }
+                                _parserSyntaxErrors.Add("Syntax Error.Array type expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                                return false;
+                            }
+                            _parserSyntaxErrors.Add("Syntax Error.Expected word 'of' at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                            return false;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol ']' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Array dimention expected at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol '[' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                return false;
+            }
+            return false;
+
+        }
+
+        private bool ARRAYTYPES()
+        {
+            if (_currentToken.Type == TokenTypes.Id)
+            {
+                _currentToken = _lexer.GetNextToken();
+                return true;
+            }
+            if (RANGO())
+            {
+                return true;
+            }
+            if (ARRAY())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool RECORD()
+        {
+            if (_currentToken.Type == TokenTypes.Record)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LISTAPROPIEDADES())
+                {
+                    if (_currentToken.Type == TokenTypes.End)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word 'end' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                    return false;
+
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool LISTAPROPIEDADES()
+        {
+            if (ListaId())
+            {
+                if (_currentToken.Type == TokenTypes.PsColon)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (TYPE())
+                    {
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected type at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ':' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                return false;
+            }
+            return true;
+
+        }
+
+        private bool TYPEDEF()
+        {
+            if (_currentToken.Type == TokenTypes.Id)
+            {
+                _currentToken = _lexer.GetNextToken();
+                return true;
+            }
+            return false;
+        }
+
+        private bool ENUMERATEDTYPE()
+        {
+            if (_currentToken.Type == TokenTypes.PsOpenParentesis)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (ListaId())
+                {
+                    if (_currentToken.Type == TokenTypes.PsCloseParentesis)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ')' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+
+            }
+            return false;
+        }
+
+        private bool CASE()
+        {
+            if (_currentToken.Type == TokenTypes.Case)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (INDEX_ACCESS())
+                    {
+                        if (_currentToken.Type == TokenTypes.Of)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            if (CASELIST())
+                            {
+                                if (_currentToken.Type == TokenTypes.End)
+                                {
+                                    _currentToken = _lexer.GetNextToken();
+                                    return true;
+                                }
+                                _parserSyntaxErrors.Add("Syntax Error.Expected word 'end' at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                                return false;
+                            }
+                            _parserSyntaxErrors.Add("Syntax Error.Missing case list or else(default) expected at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                            return false;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected word 'of' at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                        return false;
+
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol '[' or '.' at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+            }
+            return false;
+
+        }
+
+        private bool CASELIST()
+        {
+            if (CASELITERAL())
+            {
+                if (_currentToken.Type == TokenTypes.PsColon)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (BLOCK())
+                    {
+                        //if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                        //{
+                            //_currentToken = _lexer.GetNextToken();
+                            if (CASELIST())
+                            {
+                                return true;
+                            }
+                        //}
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Sentence expected at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ':' at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+            }
+            if (ELSE())
+            {
+                if (BLOCK())
+                {
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Sentence expected at: " + _currentToken.Column + " , " +
+                                       _currentToken.Row);
+                return false;
+            }
+            return true;
+        }
+
+        private bool CASELITERAL()
+        {
+            if (LISTARANGOS())
+            {
+                return true;
+            }
+            if (LISTAEXPR())
+            {
+                return false;
+            }
+            return false;
+        }
+
+        private bool LISTARANGOS()
+        {
+            if (RANGO())
+            {
+                if (LISTARANGOS_OP())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool RANGO()
+        {
+            if (_currentToken.Type == TokenTypes.Id)
+            {
+                _currentToken = _lexer.GetNextToken();
+                return true;
+            }
+            if (SUBRANGE())
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        private bool SUBRANGE()
+        {
+            if (Expression())
+            {
+                if (_currentToken.Type == TokenTypes.PsArrayRange)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (Expression())
+                    {
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol '..' at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool LISTARANGOS_OP()
+        {
+            if (_currentToken.Type== TokenTypes.PsComa)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LISTARANGOS())
+                {
+                    return true;
+                }
+            }
+            return true;
+
+        }
+
+        private bool INDEX_ACCESS()
+        {
+            if (_currentToken.Type == TokenTypes.PsOpenBracket)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    if (_currentToken.Type == TokenTypes.PsCloseBracket)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (INDEX_ACCESS())
+                        {
+                            return true;
+                        }
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ']' at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                return false;
+            }
+            if (_currentToken.Type == TokenTypes.PsPointAccesor)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (INDEX_ACCESS())
+                    {
+                        return true;
+
+                    }
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+            }
+            return true;
         }
 
         private bool CONST()
@@ -799,6 +1220,10 @@ namespace JPascalCompiler.Parser
             {
                 var name= _currentToken.Lexeme;
                 _currentToken = _lexer.GetNextToken();
+                if (X())
+                {
+                    return true;
+                }
                 return true;
             }
             else if (_currentToken.Type ==TokenTypes.Integer)
@@ -832,8 +1257,19 @@ namespace JPascalCompiler.Parser
                 _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
                 return false;
             }
+            return false;
+        }
 
-            // pendiente implementar LLAMARFUNCION
+        private bool X()
+        {
+            if (LLAMARFUNCIONSENTENCIA())
+            {
+                return true;
+            }
+            if (INDEX_ACCESS())
+            {
+                return true;
+            }
             return false;
         }
 

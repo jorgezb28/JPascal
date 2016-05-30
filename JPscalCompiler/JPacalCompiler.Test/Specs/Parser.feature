@@ -113,3 +113,28 @@ Scenario: Have a multiline simple const declaration
 	| i: Integer = 0; |
 	When We Parse
 	Then the multiline result should be true
+
+Scenario: Have a multiline simple case sentence
+	Given I have a multiline sentence declaration
+	| Sentences                |
+	| case place of            |
+	| 1: ShowMessage('sds');   |
+	| 2: ShowMessage(sdds);    |
+	| 3: ShowMessage(sd.test); |
+	| else ShowMessage(sdsd);  |
+	| end;                     |
+	When We Parse
+	Then the multiline result should be true
+
+Scenario: Have a multiline complex record sentence
+	Given I have a multiline sentence declaration
+	| Sentences                          |
+	| type TMember = record              |
+	| firstname, lastname : string;      |
+	| address: array [1 .. 3] of string; |
+	| phone: string;                     |
+	| birthdate: TDateTime;              |
+	| paidCurrentSubscription: boolean;  |
+	| end;                               |
+	When We Parse
+	Then the multiline result should be true

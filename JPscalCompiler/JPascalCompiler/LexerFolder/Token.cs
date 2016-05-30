@@ -61,7 +61,9 @@
         While,
         Repeat,
         Until,
-        Const
+        Const,
+        Case,
+        PsPointAccesor
     }
 
     public class Token

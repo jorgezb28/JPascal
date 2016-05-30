@@ -35,6 +35,7 @@ namespace JPascalCompiler.LexerFolder
                 {":=",TokenTypes.PsAssignment},
                 {"(",TokenTypes.PsOpenParentesis},
                 {")",TokenTypes.PsCloseParentesis},
+                { ".", TokenTypes.PsPointAccesor}
             };
         }
 
@@ -91,7 +92,8 @@ namespace JPascalCompiler.LexerFolder
                 {"while",TokenTypes.While},
                 {"repeat",TokenTypes.Repeat},
                 {"until",TokenTypes.Until},
-                {"const" ,TokenTypes.Const}
+                {"const" ,TokenTypes.Const},
+                {"case",TokenTypes.Case}
             };
         }
 
@@ -145,7 +147,7 @@ namespace JPascalCompiler.LexerFolder
                         else if ((_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
                                  _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString())) 
                             && _currentSymbol.Character != '>' && _currentSymbol.Character != '<' && _currentSymbol.Character != '('
-                            && _currentSymbol.Character != ':')
+                            && _currentSymbol.Character != ':' & _currentSymbol.Character != '.')
                         {
                             state = 5;
                             tokenColumn = _currentSymbol.Column;
