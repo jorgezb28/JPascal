@@ -57,7 +57,505 @@ namespace JPascalCompiler.Parser
                 _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: "+_currentToken.Column+" , "+_currentToken.Row);
                 return false;
             }
+
+            if (IF())
+            {
+                return true;
+            }
+
+            if (PREFOR())
+            {
+                return true;
+            }
+
+            if (PREID())
+            {
+                return true;
+            }
+
+            if (WHILE())
+            {
+                return true;
+            }
+
+            if (REPEAT())
+            {
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
+            if (CONST())
+            {
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
             return false;
+        }
+
+        private bool CONST()
+        {
+            if (_currentToken.Type == TokenTypes.Const)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (CONSTDECL())
+                    {
+                        return true;
+                    }
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool CONSTDECL()
+        {
+            if (_currentToken.Type == TokenTypes.OpEquals)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                return false;
+            }
+            if (_currentToken.Type == TokenTypes.PsColon)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.OpEquals)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (Expression())
+                        {
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                       _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol: '=' at column, row: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                       _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool REPEAT()
+        {
+            if (_currentToken.Type == TokenTypes.Repeat)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LS_LOOP())
+                {
+                    if (_currentToken.Type ==TokenTypes.Until)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (Expression())
+                        {
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                               _currentToken.Row);
+
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word 'until' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool WHILE()
+        {
+            if (_currentToken.Type == TokenTypes.While)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    if (_currentToken.Type == TokenTypes.Do)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (LOOPBLOCK())
+                        {
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected sentence or 'begin' word at: " +
+                                                _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word 'do' at: " + _currentToken.Column +
+                                                   " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                               _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool PREFOR()
+        {
+            if (_currentToken.Type == TokenTypes.For)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (FORBODY())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private bool FORBODY()
+        {
+            if (FOR())
+            {
+                return true;
+            }
+            if (FORIN())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool FORIN()
+        {
+            if (_currentToken.Type == TokenTypes.In)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.Do)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (LOOPBLOCK())
+                        {
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected sentence or 'begin' word at: " +
+                                                _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word: 'do' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool FOR()
+        {
+            if (_currentToken.Type == TokenTypes.PsAssignment)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    if (_currentToken.Type == TokenTypes.To)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (Expression())
+                        {
+                            if (_currentToken.Type == TokenTypes.Do)
+                            {
+                                _currentToken = _lexer.GetNextToken();
+                                if (LOOPBLOCK())
+                                {
+                                    return true;
+                                }
+                                _parserSyntaxErrors.Add("Syntax Error.Expected sentence or 'begin' word at: " +
+                                                        _currentToken.Column + " , " + _currentToken.Row);
+                                return false;
+                            }
+                            _parserSyntaxErrors.Add("Syntax Error.Expected word 'do' at: " + _currentToken.Column +
+                                                    " , " + _currentToken.Row);
+                            return false;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                                _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word 'to' at: " + _currentToken.Column + " , " +
+                                            _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +
+                                        _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool LOOPBLOCK()
+        {
+            if (_currentToken.Type == TokenTypes.Begin)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LS_LOOP())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.End)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word: 'end' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            if (LOOP_S())
+            {
+                return true;
+            }
+            return true;
+
+        }
+
+        private bool LS_LOOP()
+        {
+            if (LOOP_S())
+            {
+                return LS_LOOP();
+            }
+            return true;
+        }
+
+        private bool LOOP_S()
+        {
+            if (_currentToken.Type == TokenTypes.Continue)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
+            if (_currentToken.Type == TokenTypes.Break)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
+            if (S())
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool PREID()
+        {
+            if (_currentToken.Type == TokenTypes.Id)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (IDBODY())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool IDBODY()
+        {
+            if (_currentToken.Type== TokenTypes.PsAssignment)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            if (LLAMARFUNCIONSENTENCIA())
+            {
+                //_currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool LLAMARFUNCIONSENTENCIA()
+        {
+            if (_currentToken.Type == TokenTypes.PsOpenParentesis)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LISTAEXPR())
+                {
+                    if (_currentToken.Type==TokenTypes.PsCloseParentesis)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ')' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected  at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+
+        }
+
+        private bool LISTAEXPR()
+        {
+            if (Expression())
+            {
+                if (LISTAEXPR_OP())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        private bool LISTAEXPR_OP()
+        {
+            if (_currentToken.Type == TokenTypes.PsComa)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LISTAEXPR())
+                {
+                    return true;
+                }
+            }
+            return true;
+
+        }
+
+        private bool IF()
+        {
+            if (_currentToken.Type == TokenTypes.If)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.Then)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (BLOCK())
+                        {
+                            return ELSE();
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.'Begin' word or sentence expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word: 'then' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expresion Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool ELSE()
+        {
+            if (_currentToken.Type == TokenTypes.Else)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (BLOCK())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return true;
+        }
+
+        private bool BLOCK()
+        {
+            if (_currentToken.Type == TokenTypes.Begin)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LS())
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.End)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word: 'end' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            if (S())
+            {
+                return true;
+            }
+            return true;
         }
 
         private bool Declaracion()
@@ -148,7 +646,7 @@ namespace JPascalCompiler.Parser
             {
                 var ea = ExpresionAdicion();
                 var rep = RelationalExpresionP();
-                return  ea||rep ;
+                return  ea || rep ;
             }
             return false;
         }
@@ -205,7 +703,7 @@ namespace JPascalCompiler.Parser
             {
                 var em = ExpresionMul();
                 var eap = ExpresionAdicionP();
-                return em ||eap ;
+                return em || eap ;
             }
             return false;
         }
@@ -317,6 +815,24 @@ namespace JPascalCompiler.Parser
             {
                 return true;
             }
+            if (_currentToken.Type == TokenTypes.PsOpenParentesis)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (Expression())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.PsCloseParentesis)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ')' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
             // pendiente implementar LLAMARFUNCION
             return false;
         }

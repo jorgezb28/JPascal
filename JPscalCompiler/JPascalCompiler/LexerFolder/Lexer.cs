@@ -76,10 +76,22 @@ namespace JPascalCompiler.LexerFolder
                 {"array",TokenTypes.Array},
                 {"of",TokenTypes.Of},
                 {"var",TokenTypes.Var },
-                {"true",TokenTypes.True},
-                {"false",TokenTypes.False },
+                //{"true",TokenTypes.True},
+                //{"false",TokenTypes.False },
                 {"record",TokenTypes.Record },
-                {"end",TokenTypes.End}
+                {"end",TokenTypes.End},
+                {"if",TokenTypes.If},
+                {"then",TokenTypes.Then},
+                {"begin",TokenTypes.Begin},
+                {"else",TokenTypes.Else},
+                {"for",TokenTypes.For},
+                {"to",TokenTypes.To},
+                {"do",TokenTypes.Do},
+                {"in",TokenTypes.In},
+                {"while",TokenTypes.While},
+                {"repeat",TokenTypes.Repeat},
+                {"until",TokenTypes.Until},
+                {"const" ,TokenTypes.Const}
             };
         }
 
@@ -132,7 +144,8 @@ namespace JPascalCompiler.LexerFolder
                         }
                         else if ((_operators.ContainsKey(_currentSymbol.Character.ToString()) ||
                                  _punctuationSymbols.ContainsKey(_currentSymbol.Character.ToString())) 
-                            && _currentSymbol.Character != '>' && _currentSymbol.Character != '<' && _currentSymbol.Character != '(')
+                            && _currentSymbol.Character != '>' && _currentSymbol.Character != '<' && _currentSymbol.Character != '('
+                            && _currentSymbol.Character != ':')
                         {
                             state = 5;
                             tokenColumn = _currentSymbol.Column;

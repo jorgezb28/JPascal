@@ -75,9 +75,9 @@ Scenario: Source code have an logic operation
 	When We Tokenize
 	Then the result should be 
 		| Type  | Lexeme | Column | Row |
-		| True  | true   | 0      | 0   |
+		| Id    | true   | 0      | 0   |
 		| OpAnd | and    | 5      | 0   |
-		| False | false  | 9      | 0   |
+		| Id    | false  | 9      | 0   |
 		| EOF   | $      | 14     | 0   |
 
 Scenario: Source code have an sum aritmethic operation 
@@ -113,6 +113,17 @@ Scenario: Source code have an string assigment
 		| Id            | 'patito' | 17     | 0   |
 		| PsSentenseEnd | ;        | 25     | 0   |
 		| EOF           | $        | 26     | 0   |
+
+Scenario: Source code have an string assigment predeclared
+	Given I have an input of 's:= 'patito';'
+	When We Tokenize
+	Then the result should be 
+		| Type          | Lexeme   | Column | Row |
+		| Id            | s        | 0      | 0   |
+		| PsAssignment  | :=       | 1      | 0   |
+		| Id            | 'patito' | 4      | 0   |
+		| PsSentenseEnd | ;        | 12     | 0   |
+		| EOF           | $        | 13     | 0   |
 
 Scenario: Source code have a comment
 	Given I have an input of '(10 * 5)(*comentario*)'

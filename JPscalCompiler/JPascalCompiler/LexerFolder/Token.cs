@@ -46,7 +46,22 @@
         OpNotEquals,
         EndPascalCode,
         PsOpenParentesis,
-        PsCloseParentesis
+        PsCloseParentesis,
+        If,
+        Then,
+        Begin,
+        Else,
+        Writeln,
+        For,
+        To,
+        Do,
+        Continue,
+        Break,
+        In,
+        While,
+        Repeat,
+        Until,
+        Const
     }
 
     public class Token

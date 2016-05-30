@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Steps\LexerSteps.cs" />
     <Compile Include="Steps\MultilineLexerSteps.cs" />
+    <Compile Include="Steps\MultilineParserSteps.cs" />
     <Compile Include="Steps\ParserSteps.cs" />
   </ItemGroup>
   <ItemGroup>
