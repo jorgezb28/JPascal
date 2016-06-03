@@ -93,7 +93,8 @@ namespace JPascalCompiler.LexerFolder
                 {"repeat",TokenTypes.Repeat},
                 {"until",TokenTypes.Until},
                 {"const" ,TokenTypes.Const},
-                {"case",TokenTypes.Case}
+                {"case",TokenTypes.Case},
+                {"function", TokenTypes.Function}
             };
         }
 
@@ -342,7 +343,17 @@ namespace JPascalCompiler.LexerFolder
                         }
                         else
                         {
-                            throw new LexicalExcpetion("Unsupported token:" + currentLexeme +_currentSymbol.Character +" at col:" + tokenColumn + " and row:" + tokenRow);
+                            if (char.IsLetter( _currentSymbol.Character))
+                            {
+                                return new Token
+                                {
+                                    Column = tokenColumn,
+                                    Row = tokenRow,
+                                    Lexeme = currentLexeme,
+                                    Type = TokenTypes.PsPointAccesor
+                                };
+                            }
+                            throw new LexicalExcpetion("Unsupported token:" + currentLexeme + _currentSymbol.Character + " at col:" + tokenColumn + " and row:" + tokenRow);
                         }
                         break;
 
@@ -515,6 +526,7 @@ namespace JPascalCompiler.LexerFolder
                         if (_currentSymbol.Character == ')')
                         {
                             state = 22;
+                            currentLexeme = "";
                             _currentSymbol = CodeContent.NextCharacter();
                         }
                         else

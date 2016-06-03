@@ -437,35 +437,206 @@ this.ScenarioSetup(scenarioInfo);
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline complex record sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline complex case sentence")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
-        public virtual void HaveAMultilineComplexRecordSentence()
+        public virtual void HaveAMultilineComplexCaseSentence()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline complex record sentence", ((string[])(null)));
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline complex case sentence", ((string[])(null)));
 #line 129
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table11 = new TechTalk.SpecFlow.Table(new string[] {
                         "Sentences"});
             table11.AddRow(new string[] {
-                        "type TMember = record"});
+                        "case place of"});
             table11.AddRow(new string[] {
-                        "firstname, lastname : string;"});
+                        "1: begin ShowMessage(\'sds\');"});
             table11.AddRow(new string[] {
-                        "address: array [1 .. 3] of string;"});
+                        "ShowMessage(\'sds\');"});
             table11.AddRow(new string[] {
-                        "phone: string;"});
+                        "ShowMessage(\'sds\');"});
             table11.AddRow(new string[] {
-                        "birthdate: TDateTime;"});
+                        "end;"});
             table11.AddRow(new string[] {
-                        "paidCurrentSubscription: boolean;"});
+                        "2: ShowMessage(sdds);"});
+            table11.AddRow(new string[] {
+                        "3+expureichion(arr[expureichion(arr[4].algo[4][4].dd)]): ShowMessage(sd.test);"});
+            table11.AddRow(new string[] {
+                        "else ShowMessage(sdsd);"});
             table11.AddRow(new string[] {
                         "end;"});
 #line 130
  testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table11, "Given ");
-#line 139
+#line 141
  testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 140
+#line 142
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline complex record sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineComplexRecordSentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline complex record sentence", ((string[])(null)));
+#line 144
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table12 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table12.AddRow(new string[] {
+                        "type TMember = record"});
+            table12.AddRow(new string[] {
+                        "firstname, lastname : string;"});
+            table12.AddRow(new string[] {
+                        "address: array [1 .. 3] of string;"});
+            table12.AddRow(new string[] {
+                        "phone: string;"});
+            table12.AddRow(new string[] {
+                        "birthdate: TDateTime;"});
+            table12.AddRow(new string[] {
+                        "paidCurrentSubscription: boolean;"});
+            table12.AddRow(new string[] {
+                        "end;"});
+#line 145
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table12, "Given ");
+#line 154
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 155
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline simple array sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineSimpleArraySentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline simple array sentence", ((string[])(null)));
+#line 157
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table13 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table13.AddRow(new string[] {
+                        "TYPE"});
+            table13.AddRow(new string[] {
+                        "IntArrType = ARRAY [1 .. MaxElts] OF Integer;"});
+#line 158
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table13, "Given ");
+#line 162
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 163
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline simple enum sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineSimpleEnumSentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline simple enum sentence", ((string[])(null)));
+#line 165
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table14 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table14.AddRow(new string[] {
+                        "TYPE"});
+            table14.AddRow(new string[] {
+                        "dias = (lunes, martes, miercoles, jueves, viermes, sabado, domingo);"});
+#line 166
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table14, "Given ");
+#line 170
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 171
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline function sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineFunctionSentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline function sentence", ((string[])(null)));
+#line 173
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table15 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table15.AddRow(new string[] {
+                        "(* function returning the max between two numbers *)"});
+            table15.AddRow(new string[] {
+                        "function max(var num1, num2: integer): integer;"});
+            table15.AddRow(new string[] {
+                        "begin"});
+            table15.AddRow(new string[] {
+                        "var result: integer = 3;"});
+            table15.AddRow(new string[] {
+                        "(* local variable declaration *)"});
+            table15.AddRow(new string[] {
+                        "if (num1 > num2) then"});
+            table15.AddRow(new string[] {
+                        "result := num1;"});
+            table15.AddRow(new string[] {
+                        "else"});
+            table15.AddRow(new string[] {
+                        "result := num2;"});
+            table15.AddRow(new string[] {
+                        "end;"});
+#line 174
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table15, "Given ");
+#line 186
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 187
+ testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("Have a multiline procedure sentence")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Parser")]
+        public virtual void HaveAMultilineProcedureSentence()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Have a multiline procedure sentence", ((string[])(null)));
+#line 189
+this.ScenarioSetup(scenarioInfo);
+#line hidden
+            TechTalk.SpecFlow.Table table16 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Sentences"});
+            table16.AddRow(new string[] {
+                        "PROCEDURE ReadArr(VAR size: Integer; VAR a: IntArrType);"});
+            table16.AddRow(new string[] {
+                        "BEGIN"});
+            table16.AddRow(new string[] {
+                        "size := 1;"});
+            table16.AddRow(new string[] {
+                        "WHILE NOT eof DO"});
+            table16.AddRow(new string[] {
+                        "BEGIN"});
+            table16.AddRow(new string[] {
+                        "readln(a[size]);"});
+            table16.AddRow(new string[] {
+                        "IF NOT eof <> false THEN"});
+            table16.AddRow(new string[] {
+                        "size := size + 1;"});
+            table16.AddRow(new string[] {
+                        "END;"});
+            table16.AddRow(new string[] {
+                        "END;"});
+#line 190
+ testRunner.Given("I have a multiline sentence declaration", ((string)(null)), table16, "Given ");
+#line 202
+ testRunner.When("We Parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 203
  testRunner.Then("the multiline result should be true", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

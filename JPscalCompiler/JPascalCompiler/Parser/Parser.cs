@@ -42,7 +42,7 @@ namespace JPascalCompiler.Parser
             {
                 LS();
             }
-            return false;// ojo validar esto
+            return true;// ojo validar esto
         }
 
         private bool S()
@@ -114,6 +114,11 @@ namespace JPascalCompiler.Parser
             }
             if (DECLARETYPE())
             {
+                return true;
+            }
+
+            if (FUNCTIONDECL())
+            {
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
                     _currentToken = _lexer.GetNextToken();
@@ -123,6 +128,208 @@ namespace JPascalCompiler.Parser
                 return false;
             }
 
+            if (PROCEDUREDECL())
+            {
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+
+            return false;
+        }
+
+        private bool PROCEDUREDECL()
+        {
+            if (_currentToken.Type == TokenTypes.Procedure)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (PARAMS())
+                    {
+                        if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            if (FUNCTIONBLOCK())
+                            {
+                                return true;
+                            }
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Parameters Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool FUNCTIONDECL()
+        {
+            if (_currentToken.Type == TokenTypes.Function)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (_currentToken.Type == TokenTypes.Id)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (PARAMS())
+                    {
+                        if (_currentToken.Type == TokenTypes.PsColon)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            if (_currentToken.Type == TokenTypes.Id)
+                            {
+                                _currentToken = _lexer.GetNextToken();
+                                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                                {
+                                    _currentToken = _lexer.GetNextToken();
+                                    if (FUNCTIONBLOCK())
+                                    {
+                                        return true;
+                                    }
+                                   _parserSyntaxErrors.Add("Syntax Error.Function body expected at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                                    return false;
+                                }
+                                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                 _currentToken.Row);
+                                return false;
+                            }
+                            _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                _currentToken.Row);
+                            return false;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol ':' at: " + _currentToken.Column + " , " +
+                                 _currentToken.Row);
+                        return false;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Function params expected at: " + _currentToken.Column + " , " +
+                                 _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                 _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool FUNCTIONBLOCK()
+        {
+            if (_currentToken.Type == TokenTypes.Begin)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LS())
+                {
+                    //_currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.End)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected word: 'end' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool PARAMS()
+        {
+            if (_currentToken.Type == TokenTypes.PsOpenParentesis)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LISTADECL())
+                {
+                    if (_currentToken.Type == TokenTypes.PsCloseParentesis)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ')' at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                return false;
+            }
+            return false;
+        }
+
+        private bool LISTADECL()
+        {
+            if (DECLPARAM())
+            {
+                if (EXTRADECL())
+                {
+                    return true;
+                }
+            }
+            return true;
+
+        }
+
+        private bool EXTRADECL()
+        {
+            if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (LISTADECL())
+                {
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        private bool DECLPARAM()
+        {
+            if (_currentToken.Type == TokenTypes.Var)
+            {
+                _currentToken = _lexer.GetNextToken();
+                if (ListaId())
+                {
+                    if (_currentToken.Type == TokenTypes.PsColon)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        if (_currentToken.Type == TokenTypes.Id)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            return true;
+                        }
+                    }
+                }
+            }
+           
+            if (ListaId())
+            {
+                if (_currentToken.Type == TokenTypes.PsColon)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    if (_currentToken.Type == TokenTypes.Id)
+                    {
+                        _currentToken = _lexer.GetNextToken();
+                        return true;
+                    }
+                    _parserSyntaxErrors.Add("Syntax Error.Identifier Expected at: " + _currentToken.Column + " , " +
+                            _currentToken.Row);
+                    return false;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ':' at: " + _currentToken.Column + " , " +
+                                _currentToken.Row);
+                return false;
+            }
             return false;
         }
 
@@ -187,7 +394,15 @@ namespace JPascalCompiler.Parser
                                 _currentToken = _lexer.GetNextToken();
                                 if (ARRAYTYPES())
                                 {
-                                    return true;
+                                    if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                                    {
+                                        _currentToken = _lexer.GetNextToken();
+                                        return true;
+                                    }
+                                    _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                    _currentToken.Row);
+                                    return false;
+
                                 }
                                 _parserSyntaxErrors.Add("Syntax Error.Array type expected at: " + _currentToken.Column + " , " +
                                     _currentToken.Row);
@@ -236,7 +451,7 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Record)
             {
                 _currentToken = _lexer.GetNextToken();
-                if (LISTAPROPIEDADES())
+                if (BLOCKRECORD())
                 {
                     if (_currentToken.Type == TokenTypes.End)
                     {
@@ -273,8 +488,8 @@ namespace JPascalCompiler.Parser
                     {
                         return true;
                     }
-                    _parserSyntaxErrors.Add("Syntax Error.Expected type at: " + _currentToken.Column + " , " +
-                                    _currentToken.Row);
+                    _parserSyntaxErrors.Add("Syntax Error.Type Expected at: " + _currentToken.Column + " , " +
+                                  _currentToken.Row);
                     return false;
                 }
                 _parserSyntaxErrors.Add("Syntax Error.Expected symbol ':' at: " + _currentToken.Column + " , " +
@@ -282,7 +497,33 @@ namespace JPascalCompiler.Parser
                 return false;
             }
             return true;
+        }
 
+        private bool BLOCKRECORD()
+        {
+           if (LISTAPROPIEDADES())
+           {
+               //if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+               //{
+               //    _currentToken = _lexer.GetNextToken();
+                   if (_currentToken.Type != TokenTypes.End)
+                   {
+                        if (BLOCKRECORD())
+                        {
+                            return true;
+                        }
+                    }
+                   else
+                   {
+                       return true;
+                   }
+                //}
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                   _currentToken.Row);
+                return false;
+
+            }
+           return false;
         }
 
         private bool TYPEDEF()
@@ -290,7 +531,14 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Id)
             {
                 _currentToken = _lexer.GetNextToken();
-                return true;
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+                _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                 _currentToken.Row);
+                return false;
             }
             return false;
         }
@@ -305,7 +553,14 @@ namespace JPascalCompiler.Parser
                     if (_currentToken.Type == TokenTypes.PsCloseParentesis)
                     {
                         _currentToken = _lexer.GetNextToken();
-                        return true;
+                        if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " +
+                                 _currentToken.Row);
+                        return false;
                     }
                     _parserSyntaxErrors.Add("Syntax Error.Expected symbol ')' at: " + _currentToken.Column + " , " +
                                   _currentToken.Row);
@@ -366,7 +621,7 @@ namespace JPascalCompiler.Parser
 
         private bool CASELIST()
         {
-            if (CASELITERAL())
+            if (CASELITERAL() && _currentToken.Type != TokenTypes.Else)
             {
                 if (_currentToken.Type == TokenTypes.PsColon)
                 {
@@ -408,13 +663,13 @@ namespace JPascalCompiler.Parser
 
         private bool CASELITERAL()
         {
-            if (LISTARANGOS())
+            if (LISTAEXPR())
             {
                 return true;
             }
-            if (LISTAEXPR())
+            if (LISTARANGOS())
             {
-                return false;
+                return true;
             }
             return false;
         }
@@ -436,10 +691,13 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Id)
             {
                 _currentToken = _lexer.GetNextToken();
-                return true;
-            }
-            if (SUBRANGE())
-            {
+                if (_currentToken.Type == TokenTypes.PsArrayRange)
+                {
+                    if (SUBRANGE())
+                    {
+                        return true;
+                    }
+                }
                 return true;
             }
             return false;
@@ -448,8 +706,8 @@ namespace JPascalCompiler.Parser
 
         private bool SUBRANGE()
         {
-            if (Expression())
-            {
+            //if (Expression())
+            //{
                 if (_currentToken.Type == TokenTypes.PsArrayRange)
                 {
                     _currentToken = _lexer.GetNextToken();
@@ -464,8 +722,8 @@ namespace JPascalCompiler.Parser
                 _parserSyntaxErrors.Add("Syntax Error.Expected symbol '..' at: " + _currentToken.Column + " , " +
                                         _currentToken.Row);
                 return false;
-            }
-            return false;
+            //}
+            //return false;
         }
 
         private bool LISTARANGOS_OP()
@@ -960,11 +1218,17 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 if (LS())
                 {
-                    _currentToken = _lexer.GetNextToken();
+                    //_currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.End)
                     {
                         _currentToken = _lexer.GetNextToken();
-                        return true;
+                        if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                        {
+                            _currentToken = _lexer.GetNextToken();
+                            return true;
+                        }
+                        _parserSyntaxErrors.Add("Syntax Error.Expected symbol ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
                     }
                     _parserSyntaxErrors.Add("Syntax Error.Expected word: 'end' at: " + _currentToken.Column + " , " + _currentToken.Row);
                     return false;
@@ -1295,7 +1559,7 @@ namespace JPascalCompiler.Parser
         }
     }
 
-    public class SyntaxException : Exception
+        public class SyntaxException : Exception
     {
         public SyntaxException(string msg):base (msg)
         {

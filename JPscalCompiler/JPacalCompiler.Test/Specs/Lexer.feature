@@ -170,6 +170,19 @@ Scenario: Source code have an major relational operation
 		| Id                    | 1      | 11     | 0   |
 		| EOF                   | $      | 12     | 0   |
 
+Scenario: Source code have access property operation 
+	Given I have an input of 'pato = mipato.nombre;'
+	When We Tokenize
+	Then the result should be 
+		| Type           | Lexeme | Column | Row |
+		| Id             | pato   | 0      | 0   |
+		| OpEquals       | =      | 5      | 0   |
+		| Id             | mipato | 7      | 0   |
+		| PsPointAccesor | .      | 13     | 0   |
+		| Id             | nombre | 14     | 0   |
+		| PsSentenseEnd  | ;      | 20     | 0   |
+		| EOF            | $      | 21     | 0   |
+
 Scenario: Source code have a less relational operation 
 	Given I have an input of '3<4 and 1<=1 or 4<>5'
 	When We Tokenize

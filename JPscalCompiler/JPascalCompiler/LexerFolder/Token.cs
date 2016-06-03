@@ -63,7 +63,9 @@
         Until,
         Const,
         Case,
-        PsPointAccesor
+        PsPointAccesor,
+        Function,
+        Procedure
     }
 
     public class Token

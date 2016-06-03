@@ -126,6 +126,21 @@ Scenario: Have a multiline simple case sentence
 	When We Parse
 	Then the multiline result should be true
 
+Scenario: Have a multiline complex case sentence
+	Given I have a multiline sentence declaration
+	| Sentences                                                                      |
+	| case place of                                                                  |
+	| 1: begin ShowMessage('sds');                                                   |
+	| ShowMessage('sds');                                                            |
+	| ShowMessage('sds');                                                            |
+	| end;                                                                           |
+	| 2: ShowMessage(sdds);                                                          |
+	| 3+expureichion(arr[expureichion(arr[4].algo[4][4].dd)]): ShowMessage(sd.test); |
+	| else ShowMessage(sdsd);                                                        |
+	| end;                                                                           |
+	When We Parse
+	Then the multiline result should be true
+
 Scenario: Have a multiline complex record sentence
 	Given I have a multiline sentence declaration
 	| Sentences                          |
@@ -136,5 +151,53 @@ Scenario: Have a multiline complex record sentence
 	| birthdate: TDateTime;              |
 	| paidCurrentSubscription: boolean;  |
 	| end;                               |
+	When We Parse
+	Then the multiline result should be true
+
+Scenario: Have a multiline simple array sentence
+	Given I have a multiline sentence declaration
+	| Sentences                                     |
+	| TYPE                                          |
+	| IntArrType = ARRAY [1 .. MaxElts] OF Integer; |
+	When We Parse
+	Then the multiline result should be true
+
+Scenario: Have a multiline simple enum sentence
+	Given I have a multiline sentence declaration
+	| Sentences                                                            |
+	| TYPE                                                                 |
+	| dias = (lunes, martes, miercoles, jueves, viermes, sabado, domingo); |
+	When We Parse
+	Then the multiline result should be true
+
+Scenario: Have a multiline function sentence
+	Given I have a multiline sentence declaration
+	| Sentences                                            |
+	| (* function returning the max between two numbers *) |
+	| function max(var num1, num2: integer): integer;      |
+	| begin                                                |
+	| var result: integer = 3;                             |
+	| (* local variable declaration *)                     |
+	| if (num1 > num2) then                                |
+	| result := num1;                                      |
+	| else                                                 |
+	| result := num2;                                      |
+	| end;                                                 |
+	When We Parse
+	Then the multiline result should be true
+
+Scenario: Have a multiline procedure sentence
+	Given I have a multiline sentence declaration
+	| Sentences                                                |
+	| PROCEDURE ReadArr(VAR size: Integer; VAR a: IntArrType); |
+	| BEGIN                                                    |
+	| size := 1;                                               |
+	| WHILE NOT eof DO                                         |
+	| BEGIN                                                    |
+	| readln(a[size]);                                         |
+	| IF NOT eof <> false THEN                                 |
+	| size := size + 1;                                        |
+	| END;                                                     |
+	| END;                                                     |
 	When We Parse
 	Then the multiline result should be true
