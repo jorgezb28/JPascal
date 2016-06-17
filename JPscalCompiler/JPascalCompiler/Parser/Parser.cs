@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Lifetime;
 using JPascalCompiler.LexerFolder;
+using JPascalCompiler.Tree;
 
 namespace JPascalCompiler.Parser
 {
@@ -12,11 +13,14 @@ namespace JPascalCompiler.Parser
         private Lexer _lexer;
         private Token _currentToken;
         public List<string> _parserSyntaxErrors;
+        public List<SentenceNode> SentenceList;
+          
 
         public Parser(Lexer lexer)
         {
             _lexer = lexer;
             _parserSyntaxErrors = new List<string>();
+            SentenceList = new List<SentenceNode>();
         }
 
         public bool Parse()
@@ -1247,37 +1251,48 @@ namespace JPascalCompiler.Parser
         {
             if (_currentToken.Type == TokenTypes.Var)
             {
+                var declarationNode = new DeclarationNode(_currentToken.Row,_currentToken.Column);
                 _currentToken = _lexer.GetNextToken();
-                return FactorComunId();    
+                return FactorComunId(out declarationNode);    
             }
 
             //_parserSyntaxErrors.Add("Syntax error. Expected word: 'var' at colum:"+_currentToken.Column+" , row: "+_currentToken.Row);
             return false;
         }
 
-        private bool FactorComunId()
+        private bool FactorComunId( DeclarationNode declarationNode)
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
-                _currentToken = _lexer.GetNextToken();
-                return Y();
-            }
+                var idNode = new IdNode(_currentToken.Lexeme);
 
+                //var dec = declarationNode;
+                declarationNode.IdsList.Add(idNode);
+
+                //declarationNode = dec;
+
+                _currentToken = _lexer.GetNextToken();
+                return Y(declarationNode);
+            }
+            declarationNode = null;
             _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:"+_currentToken.Column+" , "+_currentToken.Row);
             return false;
         }
 
-        private bool Y()
+        private bool Y(DeclarationNode declarationNode)
         {
             if (_currentToken.Type ==TokenTypes.PsColon)
             {
                 _currentToken = _lexer.GetNextToken();
                 if (_currentToken.Type == TokenTypes.Id)
                 {
+                    var typeDecl = _lexer.getTokenType(_currentToken.Lexeme);
+                    declarationNode.IdType = typeDecl;
+
                     _currentToken = _lexer.GetNextToken();
-                    return AsignarValor();
+                    return AsignarValor(declarationNode);
                 }
-                
+                declarationNode = null;
                 _parserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:" + _currentToken.Column + " , " + _currentToken.Row);
                 return false;
             }
@@ -1302,11 +1317,15 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool AsignarValor()
+        private bool AsignarValor(DeclarationNode declarationNode)
         {
             if (_currentToken.Type == TokenTypes.OpEquals)
             {
                 _currentToken = _lexer.GetNextToken();
+                var expresionDecl = new ExpressionNode();
+                declarationNode.AssignedValue = expresionDecl;
+                
+                //mandar decl to expresion
                 return Expression();
             }
             //_parserSyntaxErrors.Add("Syntax Error.Expected symbol: '=' at column, row: " + _currentToken.Column + " , " + _currentToken.Row);

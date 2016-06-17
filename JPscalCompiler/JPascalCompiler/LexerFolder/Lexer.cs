@@ -566,5 +566,14 @@ namespace JPascalCompiler.LexerFolder
                 }
             }
         }
+
+        public TokenTypes getTokenType(string lexemeType)
+        {
+            if (_reservedWords.ContainsKey(lexemeType))
+            {
+                return (TokenTypes)_reservedWords[lexemeType.ToLower()];
+            }
+            return TokenTypes.Id;
+        }
     }
 }
