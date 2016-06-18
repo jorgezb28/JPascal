@@ -68,17 +68,17 @@ namespace JPascalCompiler.LexerFolder
             //key = token TYPE, value = lexeme
             _reservedWords = new Hashtable
             {
-                //{"int", TokenTypes.Integer},
+                {"int", TokenTypes.Integer},
                 //{"float",TokenTypes.Float },
                 //{"char",TokenTypes.Char }, pendiente
-                //{"string",TokenTypes.String }, pendiente
-                //{"boolean",TokenTypes.Boolean}, pendiente
+                {"string",TokenTypes.String },
+                {"boolean",TokenTypes.Boolean}, 
                 {"type",TokenTypes.Type},
                 {"array",TokenTypes.Array},
                 {"of",TokenTypes.Of},
                 {"var",TokenTypes.Var },
-                //{"true",TokenTypes.True},
-                //{"false",TokenTypes.False },
+                {"true",TokenTypes.True},
+                {"false",TokenTypes.False },
                 {"record",TokenTypes.Record },
                 {"end",TokenTypes.End},
                 {"if",TokenTypes.If},

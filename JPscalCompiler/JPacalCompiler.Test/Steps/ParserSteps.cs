@@ -27,7 +27,7 @@ namespace JPacalCompiler.Test.Steps
         public void WhenWeParse()
         {
            _myParser.Parse();
-           _parserSyntaxErrors = new List<string>(_myParser._parserSyntaxErrors);
+           _parserSyntaxErrors = new List<string>(_myParser.ParserSyntaxErrors);
         }
         
         [Then(@"the result should be true")]

@@ -1,7 +1,6 @@
 ﻿namespace JPascalCompiler.Tree
 {
-    public class ExpressionNode
+    public class OrNode:BinaryOperationNode
     {
-
     }
 }

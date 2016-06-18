@@ -36,7 +36,7 @@ namespace JPacalCompiler.Test.Steps
         public void WhenWeParse()
         {
             _myMultilineParser.Parse();
-            _parserSyntaxErrors = new List<string>(_myMultilineParser._parserSyntaxErrors);
+            _parserSyntaxErrors = new List<string>(_myMultilineParser.ParserSyntaxErrors);
         }
 
         [Then(@"the multiline result should be true")]
