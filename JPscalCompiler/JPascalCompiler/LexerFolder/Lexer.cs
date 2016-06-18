@@ -68,9 +68,9 @@ namespace JPascalCompiler.LexerFolder
             //key = token TYPE, value = lexeme
             _reservedWords = new Hashtable
             {
-                {"int", TokenTypes.Integer},
-                //{"float",TokenTypes.Float },
-                //{"char",TokenTypes.Char }, pendiente
+                {"integer", TokenTypes.Integer},
+                {"float",TokenTypes.Float },
+                {"char",TokenTypes.Char },
                 {"string",TokenTypes.String },
                 {"boolean",TokenTypes.Boolean}, 
                 {"type",TokenTypes.Type},
@@ -223,7 +223,9 @@ namespace JPascalCompiler.LexerFolder
                         }
                         else
                         {
-                            if (_reservedWords.ContainsKey(currentLexeme.ToLower()))
+                            if (_reservedWords.ContainsKey(currentLexeme.ToLower()) && 
+                                (currentLexeme.ToLower() != "string" && currentLexeme.ToLower() != "int" && currentLexeme.ToLower() != "boolean" 
+                                && currentLexeme.ToLower() != "true" && currentLexeme.ToLower() != "false" && currentLexeme.ToLower()!= "integer"))
                             {
                                 var newTokenType = (TokenTypes)_reservedWords[currentLexeme.ToLower()];
                                 return new Token
@@ -569,7 +571,7 @@ namespace JPascalCompiler.LexerFolder
 
         public TokenTypes getTokenType(string lexemeType)
         {
-            if (_reservedWords.ContainsKey(lexemeType))
+            if (_reservedWords.ContainsKey(lexemeType.ToLower()))
             {
                 return (TokenTypes)_reservedWords[lexemeType.ToLower()];
             }

@@ -8,8 +8,11 @@ namespace JPascalCompiler.Tree
 {
     public class BinaryOperationNode:ExpressionNode
     {
+        public Type TypeNode { get; set; }
 
         public ExpressionNode LeftOperand { get; set; }
         public ExpressionNode RigthOperand { get; set; }
+
+
     }
 }

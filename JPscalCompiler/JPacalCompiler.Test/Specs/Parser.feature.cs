@@ -133,7 +133,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 22
 this.ScenarioSetup(scenarioInfo);
 #line 23
- testRunner.Given("I have a sentence declaration \'Var number : integer = (1+5)*3;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("I have a sentence declaration \'Var number : integer = (1+5)*3.33;\'", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 24
  testRunner.When("We parse", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 25

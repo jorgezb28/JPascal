@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Remoting.Lifetime;
 using JPascalCompiler.LexerFolder;
 using JPascalCompiler.Tree;
+using NUnit.Framework.Constraints;
 
 namespace JPascalCompiler.Parser
 {
-    public class Parser
+   public class Parser
     {
         private readonly Lexer _lexer;
         private Token _currentToken;
@@ -42,6 +44,7 @@ namespace JPascalCompiler.Parser
 
         private bool LS()
         {
+            //var svalue = S();
             if(S())
             {
                 LS();
@@ -51,10 +54,14 @@ namespace JPascalCompiler.Parser
 
         private bool S()
         {
-            if (Declaracion())
+            var sentence = new SentenceNode();
+            
+            if ( Declaracion(sentence))
             {
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
+                    //var declSentenceNode = (DeclarationNode) sentence;
+                    SentenceList.Add(sentence.Sentence[0]);
                     _currentToken = _lexer.GetNextToken();
                     return true;
                 }
@@ -302,7 +309,7 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Var)
             {
                 _currentToken = _lexer.GetNextToken();
-                if (ListaId())
+                if (ListaId(new SentenceNode()))
                 {
                     if (_currentToken.Type == TokenTypes.PsColon)
                     {
@@ -316,7 +323,7 @@ namespace JPascalCompiler.Parser
                 }
             }
            
-            if (ListaId())
+            if (ListaId(new SentenceNode()))
             {
                 if (_currentToken.Type == TokenTypes.PsColon)
                 {
@@ -483,7 +490,7 @@ namespace JPascalCompiler.Parser
 
         private bool LISTAPROPIEDADES()
         {
-            if (ListaId())
+            if (ListaId(new SentenceNode()))
             {
                 if (_currentToken.Type == TokenTypes.PsColon)
                 {
@@ -552,7 +559,7 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.PsOpenParentesis)
             {
                 _currentToken = _lexer.GetNextToken();
-                if (ListaId())
+                if (ListaId(new SentenceNode()))
                 {
                     if (_currentToken.Type == TokenTypes.PsCloseParentesis)
                     {
@@ -580,13 +587,14 @@ namespace JPascalCompiler.Parser
 
         private bool CASE()
         {
+            var expr = new ExpressionNode();
             if (_currentToken.Type == TokenTypes.Case)
             {
                 _currentToken = _lexer.GetNextToken();
                 if (_currentToken.Type == TokenTypes.Id)
                 {
                     _currentToken = _lexer.GetNextToken();
-                    if (INDEX_ACCESS())
+                    if (INDEX_ACCESS(expr))
                     {
                         if (_currentToken.Type == TokenTypes.Of)
                         {
@@ -745,9 +753,9 @@ namespace JPascalCompiler.Parser
 
         }
 
-        private bool INDEX_ACCESS()
+        private bool INDEX_ACCESS(ExpressionNode expr)
         {
-            var expr = new ExpressionNode();
+           
             if (_currentToken.Type == TokenTypes.PsOpenBracket)
             {
                 _currentToken = _lexer.GetNextToken();
@@ -756,7 +764,7 @@ namespace JPascalCompiler.Parser
                     if (_currentToken.Type == TokenTypes.PsCloseBracket)
                     {
                         _currentToken = _lexer.GetNextToken();
-                        if (INDEX_ACCESS())
+                        if (INDEX_ACCESS(expr))
                         {
                             return true;
                         }
@@ -775,7 +783,7 @@ namespace JPascalCompiler.Parser
                 if (_currentToken.Type == TokenTypes.Id)
                 {
                     _currentToken = _lexer.GetNextToken();
-                    if (INDEX_ACCESS())
+                    if (INDEX_ACCESS(expr))
                     {
                         return true;
 
@@ -1257,38 +1265,47 @@ namespace JPascalCompiler.Parser
             return true;
         }
 
-        private bool Declaracion()
+        private bool Declaracion(SentenceNode sentence)
         {
             if (_currentToken.Type == TokenTypes.Var)
             {
-                var declarationNode = new DeclarationNode(_currentToken.Row,_currentToken.Column);
+                var declarationNode = new DeclarationNode(_currentToken.Row, _currentToken.Column)
+                {
+                    RowSentence = _currentToken.Row,
+                    ColumnSentence = _currentToken.Column
+                };
+                sentence.Sentence.Add(declarationNode);
+
                 _currentToken = _lexer.GetNextToken();
-                return FactorComunId(declarationNode);    
+
+                return FactorComunId(sentence);    
             }
 
             //_parserSyntaxErrors.Add("Syntax error. Expected word: 'var' at colum:"+_currentToken.Column+" , row: "+_currentToken.Row);
             return false;
+            //return  new Tuple<bool, SentenceNode>(false,null);
         }
 
-        private bool FactorComunId( DeclarationNode declarationNode)
+        private bool FactorComunId( SentenceNode declarationNode)
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
                 var idNode = new IdNode(_currentToken.Lexeme);
 
-                //var dec = declarationNode;
-                declarationNode.IdsList.Add(idNode);
+                var dec = (DeclarationNode)declarationNode.Sentence[0];
+                dec.IdsList.Add(idNode);
 
-                //declarationNode = dec;
+                //declarationNode.Sentence[0] = dec;
 
                 _currentToken = _lexer.GetNextToken();
                 return Y(declarationNode);
             }
             ParserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:"+_currentToken.Column+" , "+_currentToken.Row);
             return false;
+            //return new Tuple<bool, SentenceNode>(false,null);
         }
 
-        private bool Y(DeclarationNode declarationNode)
+        private bool Y(SentenceNode declarationNode)
         {
             if (_currentToken.Type ==TokenTypes.PsColon)
             {
@@ -1296,7 +1313,8 @@ namespace JPascalCompiler.Parser
                 if (_currentToken.Type == TokenTypes.Id)
                 {
                     var typeDecl = _lexer.getTokenType(_currentToken.Lexeme);
-                    declarationNode.IdType = typeDecl;
+                    var dec = (DeclarationNode)declarationNode.Sentence[0];
+                    dec.IdType = typeDecl;
 
                     _currentToken = _lexer.GetNextToken();
                     return AsignarValor(declarationNode);
@@ -1305,13 +1323,17 @@ namespace JPascalCompiler.Parser
                 return false;
             }
             
-            if (IdOpcional())
+            if (IdOpcional(declarationNode))
             {
                 if (_currentToken.Type == TokenTypes.PsColon)
                 {
                     _currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.Id)
                     {
+                        var typeDecl = _lexer.getTokenType(_currentToken.Lexeme);
+                        var dec = (DeclarationNode)declarationNode.Sentence[0];
+                        dec.IdType = typeDecl;
+
                         _currentToken = _lexer.GetNextToken();
                         return true;
                     }
@@ -1325,34 +1347,36 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool AsignarValor(DeclarationNode declarationNode)
+        private bool AsignarValor(SentenceNode declarationNode)
         {
             if (_currentToken.Type == TokenTypes.OpEquals)
             {
                 _currentToken = _lexer.GetNextToken();
                 var expresionDecl = new ExpressionNode();
-                declarationNode.AssignedValue = expresionDecl;
+                var dec = (DeclarationNode)declarationNode.Sentence[0];
+                dec.AssignedValue = expresionDecl;
                 
                 //mandar decl to expresion
                 return Expression(expresionDecl);
             }
             //_parserSyntaxErrors.Add("Syntax Error.Expected symbol: '=' at column, row: " + _currentToken.Column + " , " + _currentToken.Row);
             return true; //epsilon
+            //return new Tuple<bool, SentenceNode>(true,null);
         }
 
-        private bool Expression(ExpressionNode expresionDecl)
+        private bool Expression(ExpressionNode expr)
         {
-            var expr = new ExpressionNode();
+            //var expr = new ExpressionNode();
             return RelationalExpresion(expr);
         }
 
         private bool RelationalExpresion(ExpressionNode expr)
         {
-            var leftOperand = new ExpressionNode();
-            var ea = ExpresionAdicion(leftOperand);
+            var leftReldOperand = new ExpressionNode();
+            var ea = ExpresionAdicion(leftReldOperand);
 
 
-            var rep = RelationalExpresionP(leftOperand,expr);
+            var rep = RelationalExpresionP(leftReldOperand,expr);
             return ea || rep ;
         }
 
@@ -1373,6 +1397,7 @@ namespace JPascalCompiler.Parser
                 var rep = RelationalExpresionP(binaryOperation,expr);
                 return  ea || rep ;
             }
+            expr.Expressions.Add(leftOperand.Expressions[0]);
             return false;
         }
 
@@ -1432,41 +1457,52 @@ namespace JPascalCompiler.Parser
             
         }
 
-        private bool ExpresionAdicion(ExpressionNode expr)
+        private bool ExpresionAdicion(ExpressionNode addExpr)
         {
-            var leftOperand = new ExpressionNode();
-            var em = ExpresionMul(leftOperand);
+            var leftMultOperand = new ExpressionNode();
+            var em = ExpresionMul(leftMultOperand);
 
 
-            var eap = ExpresionAdicionP(leftOperand,expr);
+            var eap = ExpresionAdicionP(leftMultOperand,addExpr);
             return em || eap;
         }
 
-        private bool ExpresionAdicionP(ExpressionNode leftOperand,ExpressionNode expr)
+        private bool ExpresionAdicionP(ExpressionNode leftMultOperand, ExpressionNode leftAddExpr)
         {
             var binaryOperationNode = new BinaryOperationNode();
             if (OpAdicion(binaryOperationNode))
             {
-                var rigthOperand = new ExpressionNode();
-                var em = ExpresionMul(rigthOperand);
+                var rigthAddOperand = new ExpressionNode();
+                var em = ExpresionMul(rigthAddOperand);
 
-                binaryOperationNode.LeftOperand = leftOperand;
-                binaryOperationNode.RigthOperand = rigthOperand;
+                binaryOperationNode.LeftOperand = leftMultOperand.Expressions[0];
+                binaryOperationNode.RigthOperand = rigthAddOperand.Expressions[0];
 
-                expr = binaryOperationNode;
+                leftAddExpr.Expressions.Add(binaryOperationNode);
 
-                var eap = ExpresionAdicionP(binaryOperationNode,expr);
+                var eap = ExpresionAdicionP(binaryOperationNode,leftAddExpr);
                 return em || eap ;
+            }
+            if (leftMultOperand.Expressions.Any())
+            {
+                leftAddExpr.Expressions.Add(leftMultOperand.Expressions[0]);
             }
             return false;
         }
 
-        private bool OpAdicion(ExpressionNode binaryOperationNode)
+       private void Swap<T>(ref T source, ref T destiny)
+       {
+            T temp = source;
+            source = destiny;
+            destiny = temp;
+        }
+
+       private bool OpAdicion(BinaryOperationNode binaryOperationNode)
         {
             if (_currentToken.Type == TokenTypes.OpSum)
             {
-                var sumNode = new SumNode();
-                binaryOperationNode = sumNode;
+                //var sumNode = new SumNode {TypeNode = GetType()};
+                binaryOperationNode.TypeNode = typeof(SumNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
@@ -1491,42 +1527,47 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool ExpresionMul(ExpressionNode expr)
+        private bool ExpresionMul(ExpressionNode multExpr)
         {
-            var leftOperand = new UnaryNode();
-            var eu = ExpresionUnary(leftOperand);
+            var leftUnaryOperand = new ExpressionNode();
+            var eu = ExpresionUnary(leftUnaryOperand);
             
-            var emp= ExpresionMulP(leftOperand,expr);
+            var emp= ExpresionMulP(leftUnaryOperand,multExpr);
             return eu || emp;
         }
 
-        private bool ExpresionMulP(ExpressionNode leftOperand, ExpressionNode expr)
+        private bool ExpresionMulP(ExpressionNode leftUnaryOperand, ExpressionNode multExpr)
         {
             var binaryOperation = new BinaryOperationNode();
             if (OpMul( binaryOperation))
             {
-                var rigthOperand = new UnaryNode();
-                var eu = ExpresionUnary(rigthOperand);
+                var rigthMultOperand = new ExpressionNode();
+                var eu = ExpresionUnary(rigthMultOperand);
 
 
-                binaryOperation.LeftOperand = leftOperand;
-                binaryOperation.RigthOperand = rigthOperand;
+                binaryOperation.LeftOperand = leftUnaryOperand.Expressions[0];
+                binaryOperation.RigthOperand = rigthMultOperand.Expressions[0];
 
-                expr = binaryOperation;
+                multExpr.Expressions.Add( binaryOperation);
 
-                var emp =ExpresionMulP(binaryOperation, expr);
+                var emp =ExpresionMulP(binaryOperation, multExpr);
                 return eu || emp;
             }
+            if (leftUnaryOperand.Expressions.Any())
+            {
+                multExpr.Expressions.Add(leftUnaryOperand.Expressions[0]);
+            }
+            
             return false;
         }
 
-        private bool OpMul( ExpressionNode binaryOperation)
+        private bool OpMul( BinaryOperationNode binaryOperation)
         {
 
             if (_currentToken.Type == TokenTypes.OpMult)
             {
-                var multNode = new MultiplicationNode();
-                binaryOperation = multNode;
+                //var multNode = new MultiplicationNode();
+                binaryOperation.TypeNode = typeof(MultiplicationNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
@@ -1565,11 +1606,10 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
-            binaryOperation = null;
             return false;
         }
 
-        private bool ExpresionUnary(ExpressionNode expr)
+        private bool ExpresionUnary(ExpressionNode unaryexpr)
         {
             if (_currentToken.Type == TokenTypes.OpNot)
             {
@@ -1580,52 +1620,75 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 return Factor(unaryOperand);
             }
-            return Factor(expr);
+            return Factor(unaryexpr);
         }
 
         private bool Factor(ExpressionNode expr)
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
+                int intval;
+                if (int.TryParse(_currentToken.Lexeme,out intval))
+                {
+                    var intNode = new NumberNode(intval);
+                    expr.Expressions.Add(intNode);
+
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+
+                if (_currentToken.Lexeme.StartsWith("\'") && _currentToken.Lexeme.EndsWith("\'") 
+                    && _currentToken.Lexeme.Length>1)
+                {
+                    var str = _currentToken.Lexeme;
+                    var strNode = new StringNode(str);
+                    expr.Expressions.Add(strNode);
+
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+
+                if (_currentToken.Lexeme.StartsWith("\'") && _currentToken.Lexeme.EndsWith("\'"))
+                {
+                    var ch = char.Parse(_currentToken.Lexeme);
+                    var charNode = new CharNode(ch);
+                    expr.Expressions.Add(charNode);
+
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+
+                if (_currentToken.Lexeme.ToLower() == "true" || _currentToken.Lexeme.ToLower()=="false" )
+                {
+                    var boolvalueType = _lexer.getTokenType(_currentToken.Lexeme);
+                    var boolNode = new BooleanNode { Value = boolvalueType == TokenTypes.True };
+                    expr.Expressions.Add(boolNode);
+
+                    return true;
+                }
+
+                float floatValue;
+                if (float.TryParse(_currentToken.Lexeme, out floatValue))
+                {
+                    var floatNode = new FloatNode(floatValue);
+                    expr.Expressions.Add(floatNode);
+
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+
                 var name= _currentToken.Lexeme;
                 var idNode = new IdNode(name);
-                expr = idNode;
+                expr.Expressions.Add(idNode);
                 _currentToken = _lexer.GetNextToken();
-                if (X())
+                if (X(expr))
                 {
                     return true;
                 }
                 return true;
             }
 
-            if (_currentToken.Type ==TokenTypes.Integer)
-            {
-                var value = int.Parse(_currentToken.Lexeme);
-                var intNode = new NumberNode(value);
-                expr = intNode;
-
-                _currentToken = _lexer.GetNextToken();
-                return true;
-            }
-
-            if (_currentToken.Type == TokenTypes.String)
-            {
-                var str = _currentToken.Lexeme;
-                var strNode = new StringNode(str);
-                expr = strNode;
-
-                _currentToken = _lexer.GetNextToken();
-                return true;
-            }
-
-            if (_currentToken.Type == TokenTypes.Boolean)
-            {
-                var boolvalueType = _lexer.getTokenType(_currentToken.Lexeme);
-                var boolNode = new BooleanNode {Value = boolvalueType == TokenTypes.True};
-                expr = boolNode;
-
-                return true;
-            }
+            
             if (_currentToken.Type == TokenTypes.PsOpenParentesis)
             {
                 _currentToken = _lexer.GetNextToken();
@@ -1649,38 +1712,47 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool X()
+        private bool X(ExpressionNode expr)
         {
             if (LLAMARFUNCIONSENTENCIA())
             {
                 return true;
             }
-            if (INDEX_ACCESS())
+            if (INDEX_ACCESS(expr))
             {
                 return true;
             }
             return false;
         }
 
-        private bool IdOpcional()
+        private bool IdOpcional(SentenceNode declarationNode)
         {
             if (_currentToken.Type == TokenTypes.PsComa)
             {
                 _currentToken = _lexer.GetNextToken();
-                return ListaId();
+                return ListaId(declarationNode);
             }
             return true; //epsilon
+            //return new Tuple<bool, SentenceNode>(true,declarationNode);
         }
 
-        private bool ListaId()
+        private bool ListaId(SentenceNode sentence)
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
+                var idnode = new IdNode(_currentToken.Lexeme);
+                if (sentence.Sentence.Any())
+                {
+                    var dec = (DeclarationNode)sentence.Sentence[0];
+                    dec.IdsList.Add(idnode);
+                }
+
                 _currentToken = _lexer.GetNextToken();
-                return IdOpcional();
+                return IdOpcional(sentence);
             }
             ParserSyntaxErrors.Add("Syntax Error.Identifier Expected, at:" + _currentToken.Column + " , " + _currentToken.Row);
             return false;
+            //return  new Tuple<bool, SentenceNode>(false,null);
         }
     }
 

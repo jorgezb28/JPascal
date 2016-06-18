@@ -52,6 +52,8 @@
     <Compile Include="LexerFolder\SourceCode.cs" />
     <Compile Include="LexerFolder\Symbol.cs" />
     <Compile Include="LexerFolder\Token.cs" />
+    <Compile Include="Tree\FloatNode.cs" />
+    <Compile Include="Tree\CharNode.cs" />
     <Compile Include="Tree\EqualsNode.cs" />
     <Compile Include="Tree\NotEqualsNode.cs" />
     <Compile Include="Tree\GreaterThanOrEaulsNode.cs" />

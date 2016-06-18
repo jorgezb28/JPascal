@@ -20,7 +20,7 @@ Scenario: Have the string declaration sentence with initialization
 	Then the result should be true
 
 Scenario: Have the declaration sentence with expresion initialization
-	Given I have a sentence declaration 'Var number : integer = (1+5)*3;'
+	Given I have a sentence declaration 'Var number : integer = (1+5)*3.33;'
 	When We parse
 	Then the result should be true
 
