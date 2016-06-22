@@ -94,7 +94,8 @@ namespace JPascalCompiler.LexerFolder
                 {"until",TokenTypes.Until},
                 {"const" ,TokenTypes.Const},
                 {"case",TokenTypes.Case},
-                {"function", TokenTypes.Function}
+                {"function", TokenTypes.Function},
+                {"writeln", TokenTypes.Writeln}
             };
         }
 

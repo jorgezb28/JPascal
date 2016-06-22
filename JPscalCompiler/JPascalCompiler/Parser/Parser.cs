@@ -17,12 +17,14 @@ namespace JPascalCompiler.Parser
         public List<string> ParserSyntaxErrors;
         public List<SentenceNode> SentenceList;
        internal bool IsBlockSection;
+       internal bool IsNestedSentence;
           
 
         public Parser(Lexer lexer)
         {
             _lexer = lexer;
             IsBlockSection = false;
+            IsNestedSentence = false;
             ParserSyntaxErrors = new List<string>();
             SentenceList = new List<SentenceNode>();
         }
@@ -31,7 +33,8 @@ namespace JPascalCompiler.Parser
         {
             _currentToken = _lexer.GetNextToken();
             //LS();
-            if (LS(new SentenceNode())) //el codigo no tuvo errores de compilacion
+            var sentence = new SentenceNode();
+            if (LS(sentence)) //el codigo no tuvo errores de compilacion
             {
                 return true;
             }
@@ -56,20 +59,20 @@ namespace JPascalCompiler.Parser
 
         private bool S(SentenceNode sentenceExpresion)
         {
-            var sentence = new SentenceNode();
             
-            if ( Declaracion(sentence))
+            
+            if ( Declaracion(sentenceExpresion))
             {
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
                     //var declSentenceNode = (DeclarationNode) sentence;
-                    if (IsBlockSection)
+                    if (IsBlockSection || IsNestedSentence)
                     {
-                        sentenceExpresion.Sentence.Add(sentence.Sentence[0]);
+                        sentenceExpresion.Sentence.Add(sentenceExpresion.Sentence[0]);
                     }
                     else
                     {
-                         SentenceList.Add(sentence.Sentence[0]);
+                         SentenceList.Add(sentenceExpresion.Sentence[0]);
                     }
                     _currentToken = _lexer.GetNextToken();
                     return true;
@@ -79,17 +82,37 @@ namespace JPascalCompiler.Parser
                 return false;
             }
 
-            if (IF(sentence))
+            if (IF(sentenceExpresion))
             {
                 if (IsBlockSection)
                     {
-                        sentenceExpresion.Sentence.Add(sentence.Sentence[0]);
+                        sentenceExpresion.Sentence.Add(sentenceExpresion.Sentence[0]);
                     }
                     else
                     {
-                         SentenceList.Add(sentence.Sentence[0]);
+                         SentenceList.Add(sentenceExpresion.Sentence[0]);
                     }
                 return true;
+            }
+
+            if (WRITELN(sentenceExpresion))
+            {
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                {
+                    if (IsBlockSection)
+                    {
+                        sentenceExpresion.Sentence.Add(sentenceExpresion.Sentence[0]);
+                    }
+                    else
+                    {
+                        SentenceList.Add(sentenceExpresion.Sentence[0]);
+                    }
+                    _currentToken = _lexer.GetNextToken();
+                    return true;
+                }
+
+                ParserSyntaxErrors.Add("Syntax Error.Expected symbol: ';' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                return false;
             }
 
             if (PREFOR())
@@ -170,7 +193,38 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool PROCEDUREDECL()
+       private bool WRITELN(SentenceNode sentence)
+       {
+           if (_currentToken.Type == TokenTypes.Writeln)
+           {
+               var column = _currentToken.Column;
+               var row = _currentToken.Row;
+               _currentToken = _lexer.GetNextToken();
+               if (_currentToken.Type == TokenTypes.PsOpenParentesis)
+               {
+                   _currentToken = _lexer.GetNextToken();
+                    var writelnExpr = new ExpressionNode();
+                   if (Expression(writelnExpr))
+                   {
+                       if (_currentToken.Type == TokenTypes.PsCloseParentesis)
+                       {
+                           _currentToken = _lexer.GetNextToken();
+                            sentence.Sentence.Add(new WritelnNode(row,column,writelnExpr) );
+                           return true;
+                       }
+                        ParserSyntaxErrors.Add("Syntax Error.Expected symbol: ')' at: " + _currentToken.Column + " , " + _currentToken.Row);
+                        return false;
+                    }
+                    ParserSyntaxErrors.Add("Syntax Error.Expression Expected at: " + _currentToken.Column + " , " +_currentToken.Row);
+                   return false;
+               }
+               ParserSyntaxErrors.Add("Syntax Error.Expected symbol: '(' at: " + _currentToken.Column + " , " + _currentToken.Row);
+               return false;
+           }
+           return false;
+       }
+
+       private bool PROCEDUREDECL()
         {
             if (_currentToken.Type == TokenTypes.Procedure)
             {
@@ -1224,12 +1278,13 @@ namespace JPascalCompiler.Parser
                         var ifBlockSentences = new SentenceNode();
                         if (BLOCK(ifBlockSentences))
                         {
-                            IsBlockSection = false;
                             var elseBlockSentences= new SentenceNode();
-                            var elseVal =ELSE(elseBlockSentences);
-
-                            sentence.Sentence.Add(new IfNode(ifRow,ifColumn, ifConditionExpression,ifBlockSentences,elseBlockSentences));
-                            return elseVal;
+                            if (ELSE(elseBlockSentences))
+                            {
+                                sentence.Sentence.Add(new IfNode(ifRow, ifColumn, ifConditionExpression, ifBlockSentences, elseBlockSentences));
+                                return true;
+                            }
+                            return true;
                         }
                         ParserSyntaxErrors.Add("Syntax Error.'Begin' word or sentence expected at: " + _currentToken.Column + " , " + _currentToken.Row);
                         return false;
@@ -1247,12 +1302,12 @@ namespace JPascalCompiler.Parser
         {
             if (_currentToken.Type == TokenTypes.Else)
             {
-                IsBlockSection = true;
+                IsNestedSentence = true;
                 _currentToken = _lexer.GetNextToken();
                 if (BLOCK(elseBlockSentences))
                 {
                     //_currentToken = _lexer.GetNextToken();
-                    IsBlockSection = false;
+                    //IsBlockSection = false;
                     return true;
                 }
                 ParserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
@@ -1269,7 +1324,7 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 if (LS(blockSentences))
                 {
-                    //_currentToken = _lexer.GetNextToken();
+                    IsBlockSection = false;
                     if (_currentToken.Type == TokenTypes.End)
                     {
                         _currentToken = _lexer.GetNextToken();
@@ -1421,7 +1476,7 @@ namespace JPascalCompiler.Parser
                 binaryOperation.LeftOperand = leftOperand;
                 binaryOperation.RigthOperand = rigthOperand;
 
-                expr = binaryOperation;
+                expr.Expressions.Add(binaryOperation);
 
                 var rep = RelationalExpresionP(binaryOperation,expr);
                 return  ea || rep ;
