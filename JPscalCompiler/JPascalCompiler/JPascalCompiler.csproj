@@ -55,6 +55,7 @@
     <Compile Include="Tree\FloatNode.cs" />
     <Compile Include="Tree\CharNode.cs" />
     <Compile Include="Tree\EqualsNode.cs" />
+    <Compile Include="Tree\IfNode.cs" />
     <Compile Include="Tree\NotEqualsNode.cs" />
     <Compile Include="Tree\GreaterThanOrEaulsNode.cs" />
     <Compile Include="Tree\LessThanOrEqualsNode.cs" />

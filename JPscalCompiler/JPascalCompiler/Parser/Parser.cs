@@ -16,11 +16,13 @@ namespace JPascalCompiler.Parser
         private Token _currentToken;
         public List<string> ParserSyntaxErrors;
         public List<SentenceNode> SentenceList;
+       internal bool IsBlockSection;
           
 
         public Parser(Lexer lexer)
         {
             _lexer = lexer;
+            IsBlockSection = false;
             ParserSyntaxErrors = new List<string>();
             SentenceList = new List<SentenceNode>();
         }
@@ -29,7 +31,7 @@ namespace JPascalCompiler.Parser
         {
             _currentToken = _lexer.GetNextToken();
             //LS();
-            if (LS()) //el codigo no tuvo errores de compilacion
+            if (LS(new SentenceNode())) //el codigo no tuvo errores de compilacion
             {
                 return true;
             }
@@ -42,17 +44,17 @@ namespace JPascalCompiler.Parser
             return true; //no hubo error de compilacion
         }
 
-        private bool LS()
+        private bool LS(SentenceNode sentence)
         {
             //var svalue = S();
-            if(S())
+            if(S(sentence))
             {
-                LS();
+                LS(sentence);
             }
             return true;// ojo validar esto
         }
 
-        private bool S()
+        private bool S(SentenceNode sentenceExpresion)
         {
             var sentence = new SentenceNode();
             
@@ -61,7 +63,14 @@ namespace JPascalCompiler.Parser
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
                     //var declSentenceNode = (DeclarationNode) sentence;
-                    SentenceList.Add(sentence.Sentence[0]);
+                    if (IsBlockSection)
+                    {
+                        sentenceExpresion.Sentence.Add(sentence.Sentence[0]);
+                    }
+                    else
+                    {
+                         SentenceList.Add(sentence.Sentence[0]);
+                    }
                     _currentToken = _lexer.GetNextToken();
                     return true;
                 }
@@ -70,8 +79,16 @@ namespace JPascalCompiler.Parser
                 return false;
             }
 
-            if (IF())
+            if (IF(sentence))
             {
+                if (IsBlockSection)
+                    {
+                        sentenceExpresion.Sentence.Add(sentence.Sentence[0]);
+                    }
+                    else
+                    {
+                         SentenceList.Add(sentence.Sentence[0]);
+                    }
                 return true;
             }
 
@@ -238,7 +255,7 @@ namespace JPascalCompiler.Parser
             if (_currentToken.Type == TokenTypes.Begin)
             {
                 _currentToken = _lexer.GetNextToken();
-                if (LS())
+                if (LS(new SentenceNode()))
                 {
                     //_currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.End)
@@ -638,7 +655,7 @@ namespace JPascalCompiler.Parser
                 if (_currentToken.Type == TokenTypes.PsColon)
                 {
                     _currentToken = _lexer.GetNextToken();
-                    if (BLOCK())
+                    if (BLOCK(new SentenceNode()))
                     {
                         //if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                         //{
@@ -660,9 +677,9 @@ namespace JPascalCompiler.Parser
                                     _currentToken.Row);
                 return false;
             }
-            if (ELSE())
+            if (ELSE(new SentenceNode()))
             {
-                if (BLOCK())
+                if (BLOCK(new SentenceNode()))
                 {
                     return true;
                 }
@@ -1077,6 +1094,7 @@ namespace JPascalCompiler.Parser
             {
                 _currentToken = _lexer.GetNextToken();
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
+                if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
                     _currentToken = _lexer.GetNextToken();
                     return true;
@@ -1085,7 +1103,7 @@ namespace JPascalCompiler.Parser
                 return false;
             }
 
-            if (S())
+            if (S(new SentenceNode()))
             {
                 return true;
             }
@@ -1189,21 +1207,29 @@ namespace JPascalCompiler.Parser
 
         }
 
-        private bool IF()
+        private bool IF(SentenceNode sentence)
         {
-            var expr = new ExpressionNode();
             if (_currentToken.Type == TokenTypes.If)
             {
+                var ifColumn = _currentToken.Column;
+                var ifRow = _currentToken.Row;
                 _currentToken = _lexer.GetNextToken();
-                if (Expression(expr))
+                var ifConditionExpression = new ExpressionNode();
+                if (Expression(ifConditionExpression))
                 {
                     //_currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.Then)
                     {
                         _currentToken = _lexer.GetNextToken();
-                        if (BLOCK())
+                        var ifBlockSentences = new SentenceNode();
+                        if (BLOCK(ifBlockSentences))
                         {
-                            return ELSE();
+                            IsBlockSection = false;
+                            var elseBlockSentences= new SentenceNode();
+                            var elseVal =ELSE(elseBlockSentences);
+
+                            sentence.Sentence.Add(new IfNode(ifRow,ifColumn, ifConditionExpression,ifBlockSentences,elseBlockSentences));
+                            return elseVal;
                         }
                         ParserSyntaxErrors.Add("Syntax Error.'Begin' word or sentence expected at: " + _currentToken.Column + " , " + _currentToken.Row);
                         return false;
@@ -1217,14 +1243,16 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool ELSE()
+        private bool ELSE(SentenceNode elseBlockSentences)
         {
             if (_currentToken.Type == TokenTypes.Else)
             {
+                IsBlockSection = true;
                 _currentToken = _lexer.GetNextToken();
-                if (BLOCK())
+                if (BLOCK(elseBlockSentences))
                 {
                     //_currentToken = _lexer.GetNextToken();
+                    IsBlockSection = false;
                     return true;
                 }
                 ParserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
@@ -1233,12 +1261,13 @@ namespace JPascalCompiler.Parser
             return true;
         }
 
-        private bool BLOCK()
+        private bool BLOCK(SentenceNode blockSentences)
         {
             if (_currentToken.Type == TokenTypes.Begin)
             {
+                IsBlockSection = true;
                 _currentToken = _lexer.GetNextToken();
-                if (LS())
+                if (LS(blockSentences))
                 {
                     //_currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.End)
@@ -1258,7 +1287,7 @@ namespace JPascalCompiler.Parser
                 ParserSyntaxErrors.Add("Syntax Error.Expected sentence at: " + _currentToken.Column + " , " + _currentToken.Row);
                 return false;
             }
-            if (S())
+            if (S(blockSentences))
             {
                 return true;
             }
@@ -1397,62 +1426,59 @@ namespace JPascalCompiler.Parser
                 var rep = RelationalExpresionP(binaryOperation,expr);
                 return  ea || rep ;
             }
-            expr.Expressions.Add(leftOperand.Expressions[0]);
+            if (leftOperand.Expressions.Any())
+            {
+                expr.Expressions.Add(leftOperand.Expressions[0]);
+            }
+            
             return false;
         }
 
-        private bool OpRelational(ExpressionNode binaryOperation)
+        private bool OpRelational(BinaryOperationNode binaryOperation)
         {
             if (_currentToken.Type == TokenTypes.OpLessThan)
             {
-                var lesThanNode = new LessThanNode();
-                binaryOperation = lesThanNode;
-
+               binaryOperation.TypeNode = typeof(LessThanNode);
+               
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
 
             if (_currentToken.Type == TokenTypes.OpGreaterThan)
             {
-                var greaterThanNode = new GreaterThanNode();
-                binaryOperation = greaterThanNode;
+                binaryOperation.TypeNode = typeof(GreaterThanNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
             if (_currentToken.Type == TokenTypes.OpLessThanOrEquals)
             {
-                var lessThanEqualsNode = new LessThanOrEqualsNode();
-                binaryOperation = lessThanEqualsNode;
+                binaryOperation.TypeNode = typeof(LessThanOrEqualsNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
             if (_currentToken.Type == TokenTypes.OpGreaterThanOrEquals)
             {
-                var greaterThanEqual = new GreaterThanOrEqualsNode();
-                binaryOperation = greaterThanEqual;
+                binaryOperation.TypeNode = typeof(GreaterThanOrEqualsNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
             if (_currentToken.Type == TokenTypes.OpNotEquals)
             {
-                var notEqualsNode = new NotEqualsNode();
-                binaryOperation = notEqualsNode;
+                binaryOperation.TypeNode = typeof(NotEqualsNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
             if (_currentToken.Type == TokenTypes.OpEquals)
             {
-                var equalsNode = new EqualsNode();
-                binaryOperation = equalsNode;
+                binaryOperation.TypeNode = typeof(EqualsNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
-            binaryOperation = null;
             return false;
             
         }
