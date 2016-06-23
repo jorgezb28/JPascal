@@ -52,10 +52,12 @@
     <Compile Include="LexerFolder\SourceCode.cs" />
     <Compile Include="LexerFolder\Symbol.cs" />
     <Compile Include="LexerFolder\Token.cs" />
+    <Compile Include="Tree\AssignNode.cs" />
     <Compile Include="Tree\ContinueNode.cs" />
     <Compile Include="Tree\FloatNode.cs" />
     <Compile Include="Tree\CharNode.cs" />
     <Compile Include="Tree\EqualsNode.cs" />
+    <Compile Include="Tree\ForInNode.cs" />
     <Compile Include="Tree\ForNode.cs" />
     <Compile Include="Tree\IfNode.cs" />
     <Compile Include="Tree\NotEqualsNode.cs" />

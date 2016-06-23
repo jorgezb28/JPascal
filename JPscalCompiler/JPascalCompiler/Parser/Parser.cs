@@ -137,7 +137,7 @@ namespace JPascalCompiler.Parser
                 return true;
             }
 
-            if (PREID())
+            if (PREID(newSentece))
             {
                 return true;
             }
@@ -1057,26 +1057,30 @@ namespace JPascalCompiler.Parser
             {
                 return true;
             }
-            if (FORIN())
+            if (FORIN(new ForInNode(forNode.IndexVarible),forSentenceNode))
             {
                 return true;
             }
             return false;
         }
 
-        private bool FORIN()
+        private bool FORIN(ForInNode forInNode,SentenceNode forinSentece)
         {
             if (_currentToken.Type == TokenTypes.In)
             {
                 _currentToken = _lexer.GetNextToken();
                 if (_currentToken.Type == TokenTypes.Id)
                 {
+                    forInNode.SourceList = new IdNode(_currentToken.Lexeme);
                     _currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.Do)
                     {
                         _currentToken = _lexer.GetNextToken();
-                        if (LOOPBLOCK(new SentenceNode()))
+                        if (LOOPBLOCK(forInNode))
                         {
+                            forInNode.ForInSentences.AddRange(forInNode.Sentence.ToList());
+                            forInNode.Sentence.Clear();
+                            forinSentece.Sentence.Add(forInNode);
                             return true;
                         }
                         ParserSyntaxErrors.Add("Syntax Error.Expected sentence or 'begin' word at: " +
@@ -1236,12 +1240,13 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool PREID()
+        private bool PREID(SentenceNode newSentece)
         {
             if (_currentToken.Type == TokenTypes.Id)
             {
+                var idVal = new IdNode(_currentToken.Lexeme);
                 _currentToken = _lexer.GetNextToken();
-                if (IDBODY())
+                if (IDBODY(idVal,newSentece))
                 {
                     return true;
                 }
@@ -1249,17 +1254,18 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool IDBODY()
+        private bool IDBODY(IdNode idVal, SentenceNode idSentece)
         {
-            var expr = new ExpressionNode();
             if (_currentToken.Type== TokenTypes.PsAssignment)
             {
                 _currentToken = _lexer.GetNextToken();
-                if (Expression(expr))
+                var assignExpr = new ExpressionNode();
+                if (Expression(assignExpr))
                 {
                     //_currentToken = _lexer.GetNextToken();
                     if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                     {
+                        idSentece.Sentence.Add(new AssignNode(idVal,assignExpr));   
                         _currentToken = _lexer.GetNextToken();
                         return true;
                     }
