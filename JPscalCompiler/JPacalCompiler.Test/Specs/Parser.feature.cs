@@ -247,7 +247,7 @@ this.ScenarioSetup(scenarioInfo);
             table4.AddRow(new string[] {
                         "begin"});
             table4.AddRow(new string[] {
-                        "write(a2,s);"});
+                        "writeln(a2,s);"});
             table4.AddRow(new string[] {
                         "end;"});
             table4.AddRow(new string[] {

@@ -60,7 +60,7 @@ Scenario: Have a multiline complex for sentence
 	| begin            |
 	| for j:=1 to 3 do |
 	| begin            |
-	| write(a2,s);     |
+	| writeln(a2,s);   |
 	| end;             |
 	| writeln();       |
 	| end;             |
