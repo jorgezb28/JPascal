@@ -52,6 +52,7 @@
     <Compile Include="LexerFolder\SourceCode.cs" />
     <Compile Include="LexerFolder\Symbol.cs" />
     <Compile Include="LexerFolder\Token.cs" />
+    <Compile Include="Tree\AccesorExpresion.cs" />
     <Compile Include="Tree\AssignNode.cs" />
     <Compile Include="Tree\CaseLiteral.cs" />
     <Compile Include="Tree\CaseNode.cs" />

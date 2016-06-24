@@ -15,9 +15,11 @@ namespace JPascalCompiler.Tree
             IsFirstSentence = false;
             CaseExpression = new ExpressionNode();
             CaseLiterals = new List<ExpressionNode>();
+            ElseLiteralSentences = new List<SentenceNode>();
         }
 
         public List<ExpressionNode> CaseLiterals;
+        public List<SentenceNode> ElseLiteralSentences { get; set; }
         public ExpressionNode CaseExpression { get; set; }
         public bool IsFirstSentence { get; set; }
     }

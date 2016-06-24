@@ -13,5 +13,6 @@ namespace JPascalCompiler.Tree
             LiteralSentences = new List<SentenceNode>();
         }
         public List<SentenceNode> LiteralSentences { get; set; }
+        
     }
 }

@@ -840,7 +840,7 @@ namespace JPascalCompiler.Parser
             }
             if (ELSE(caseLiteralSentence))
             {
-                caseLiteral.LiteralSentences.AddRange(caseLiteralSentence.Sentence);
+                caseNode.ElseLiteralSentences.AddRange(caseLiteralSentence.Sentence);
                 if (BLOCK(caseNode))
                 {
                     return true;
@@ -937,19 +937,26 @@ namespace JPascalCompiler.Parser
 
         }
 
-        private bool INDEX_ACCESS(ExpressionNode expr)
+        private bool INDEX_ACCESS(IdNode idNode,ExpressionNode expr)
         {
            
             if (_currentToken.Type == TokenTypes.PsOpenBracket)
             {
                 _currentToken = _lexer.GetNextToken();
-                if (Expression(expr))
+                var accesoExpr = new AccesorExpresion();
+                accesoExpr.AccessorId = idNode;
+
+                var newExpresionAccesor = new ExpressionNode();
+                if (Expression(newExpresionAccesor))
                 {
+                    accesoExpr.AccesorSentences.Add(newExpresionAccesor.Expressions[0]);
+
                     if (_currentToken.Type == TokenTypes.PsCloseBracket)
                     {
                         _currentToken = _lexer.GetNextToken();
-                        if (INDEX_ACCESS(expr))
+                        if (INDEX_ACCESS(accesoExpr.AccessorId, newExpresionAccesor))
                         {
+                            expr.Expressions.Add(accesoExpr);
                             return true;
                         }
                     }
@@ -966,9 +973,14 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 if (_currentToken.Type == TokenTypes.Id)
                 {
+                    var accesoExpr = new AccesorExpresion();
+                    accesoExpr.AccessorId = new IdNode(_currentToken.Lexeme);
+
+                    var newExpresionAccesor = new ExpressionNode();
                     _currentToken = _lexer.GetNextToken();
-                    if (INDEX_ACCESS(expr))
+                    if (INDEX_ACCESS(accesoExpr.AccessorId, newExpresionAccesor))
                     {
+                        accesoExpr.AccesorSentences.Add(newExpresionAccesor.Expressions[0]);
                         return true;
 
                     }
@@ -1960,7 +1972,7 @@ namespace JPascalCompiler.Parser
                 var idNode = new IdNode(name);
                 expr.Expressions.Add(idNode);
                 _currentToken = _lexer.GetNextToken();
-                if (X(expr))
+                if (X(idNode, expr))
                 {
                     return true;
                 }
@@ -1991,13 +2003,14 @@ namespace JPascalCompiler.Parser
             return false;
         }
 
-        private bool X(ExpressionNode expr)
+        private bool X(IdNode idNode,ExpressionNode expr)
         {
-            if (LLAMARFUNCIONSENTENCIA(new IdNode(""),new SentenceNode() ))
+            var xSentence = new SentenceNode();
+            if (LLAMARFUNCIONSENTENCIA(idNode,xSentence ))
             {
                 return true;
             }
-            if (INDEX_ACCESS(expr))
+            if (INDEX_ACCESS(idNode,expr))
             {
                 return true;
             }
