@@ -11,6 +11,8 @@ namespace JPascalCompiler.Tree
         public ExpressionNode IfConditionExpression { get; set; }
         public SentenceNode TrueBlockSentences { get; set; }
         public SentenceNode ElseBlockSentences { get; set; }
+        public bool IsFirstSentece { get; set; }
+
         public IfNode(int column,int row, ExpressionNode ifConditionExpression, SentenceNode trueBlockSentences, SentenceNode elseBlockSentences)
         {
             IfConditionExpression = ifConditionExpression;
@@ -18,6 +20,14 @@ namespace JPascalCompiler.Tree
             ElseBlockSentences = elseBlockSentences;
             RowSentence = row;
             ColumnSentence = column;
+            IsFirstSentece = false;
+        }
+
+        public IfNode(int column, int row)
+        {
+            RowSentence = row;
+            ColumnSentence = column;
+            IsFirstSentece = false;
         }
     }
 }
