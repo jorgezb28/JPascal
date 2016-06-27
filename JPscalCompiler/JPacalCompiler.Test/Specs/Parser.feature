@@ -135,7 +135,7 @@ Scenario: Have a multiline complex case sentence
 	| ShowMessage('sds');                                                            |
 	| end;                                                                           |
 	| 2: ShowMessage(sdds);                                                          |
-	| 3+expureichion(arr[expureichion(arr[4].algo[4][4].dd)]): ShowMessage(sd.test); |
+	| 3+expureichion(arr[expureichion(arr[1].algo[3][4].dd)]): ShowMessage(sd.test); |
 	| else ShowMessage(sdsd);                                                        |
 	| end;                                                                           |
 	When We Parse

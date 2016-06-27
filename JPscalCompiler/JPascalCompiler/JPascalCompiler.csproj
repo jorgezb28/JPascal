@@ -39,6 +39,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,17 +54,23 @@
     <Compile Include="LexerFolder\Symbol.cs" />
     <Compile Include="LexerFolder\Token.cs" />
     <Compile Include="Tree\AccesorExpresion.cs" />
+    <Compile Include="Tree\ArrayExpression.cs" />
+    <Compile Include="Tree\ArrayNode.cs" />
     <Compile Include="Tree\AssignNode.cs" />
     <Compile Include="Tree\CaseLiteral.cs" />
     <Compile Include="Tree\CaseNode.cs" />
     <Compile Include="Tree\ConstantNode.cs" />
     <Compile Include="Tree\ContinueNode.cs" />
+    <Compile Include="Tree\EnumerationNode.cs" />
+    <Compile Include="Tree\EnumeratorConstants.cs" />
     <Compile Include="Tree\FloatNode.cs" />
     <Compile Include="Tree\CharNode.cs" />
     <Compile Include="Tree\EqualsNode.cs" />
     <Compile Include="Tree\ForInNode.cs" />
     <Compile Include="Tree\ForNode.cs" />
+    <Compile Include="Tree\FunctionCallExpression.cs" />
     <Compile Include="Tree\FunctionCallNode.cs" />
+    <Compile Include="Tree\FunctionDeclarationNode.cs" />
     <Compile Include="Tree\IfNode.cs" />
     <Compile Include="Tree\NotEqualsNode.cs" />
     <Compile Include="Tree\GreaterThanOrEaulsNode.cs" />
@@ -71,7 +78,12 @@
     <Compile Include="Tree\GreaterThanNode.cs" />
     <Compile Include="Tree\LessThanNode.cs" />
     <Compile Include="Tree\OrNode.cs" />
+    <Compile Include="Tree\ParameterExpressionByReference.cs" />
+    <Compile Include="Tree\ParametersIds.cs" />
+    <Compile Include="Tree\ProcedureDeclarationNode.cs" />
     <Compile Include="Tree\RangeExpression.cs" />
+    <Compile Include="Tree\RecordNode.cs" />
+    <Compile Include="Tree\RecordPropertyNode.cs" />
     <Compile Include="Tree\RepeatNode.cs" />
     <Compile Include="Tree\SubstractionNode.cs" />
     <Compile Include="Tree\SumNode.cs" />
@@ -81,6 +93,7 @@
     <Compile Include="Tree\DivisionRealNode.cs" />
     <Compile Include="Tree\MultiplicationNode.cs" />
     <Compile Include="Tree\BinaryOperationNode.cs" />
+    <Compile Include="Tree\TypeDefinitionNode.cs" />
     <Compile Include="Tree\UnaryNode.cs" />
     <Compile Include="Tree\BooleanNode.cs" />
     <Compile Include="Tree\StringNode.cs" />

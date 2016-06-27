@@ -95,6 +95,7 @@ namespace JPascalCompiler.LexerFolder
                 {"const" ,TokenTypes.Const},
                 {"case",TokenTypes.Case},
                 {"function", TokenTypes.Function},
+                {"procedure", TokenTypes.Procedure},
                 {"writeln", TokenTypes.Writeln}
             };
         }
@@ -226,7 +227,8 @@ namespace JPascalCompiler.LexerFolder
                         {
                             if (_reservedWords.ContainsKey(currentLexeme.ToLower()) && 
                                 (currentLexeme.ToLower() != "string" && currentLexeme.ToLower() != "int" && currentLexeme.ToLower() != "boolean" 
-                                && currentLexeme.ToLower() != "true" && currentLexeme.ToLower() != "false" && currentLexeme.ToLower()!= "integer"))
+                                && currentLexeme.ToLower() != "true" && currentLexeme.ToLower() != "false" && currentLexeme.ToLower()!= "integer"
+                                && currentLexeme.ToLower() != "float"))
                             {
                                 var newTokenType = (TokenTypes)_reservedWords[currentLexeme.ToLower()];
                                 return new Token

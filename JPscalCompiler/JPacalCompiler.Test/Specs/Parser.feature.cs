@@ -460,7 +460,7 @@ this.ScenarioSetup(scenarioInfo);
             table11.AddRow(new string[] {
                         "2: ShowMessage(sdds);"});
             table11.AddRow(new string[] {
-                        "3+expureichion(arr[expureichion(arr[4].algo[4][4].dd)]): ShowMessage(sd.test);"});
+                        "3+expureichion(arr[expureichion(arr[1].algo[3][4].dd)]): ShowMessage(sd.test);"});
             table11.AddRow(new string[] {
                         "else ShowMessage(sdsd);"});
             table11.AddRow(new string[] {

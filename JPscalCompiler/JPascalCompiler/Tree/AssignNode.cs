@@ -8,13 +8,13 @@ namespace JPascalCompiler.Tree
 {
     public class AssignNode :SentenceNode
     {
-        public AssignNode(IdNode idVal, ExpressionNode assignExpr)
+        public AssignNode(ExpressionNode idVal, ExpressionNode assignExpr)
         {
             VariableId = idVal;
             ValueExpression = assignExpr;
         }
 
-        public IdNode VariableId { get; set; }
+        public ExpressionNode VariableId { get; set; }
         public ExpressionNode ValueExpression { get; set; }
     }
 }

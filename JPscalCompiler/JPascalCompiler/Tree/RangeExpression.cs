@@ -8,6 +8,11 @@ namespace JPascalCompiler.Tree
 {
     public class RangeExpression : ExpressionNode
     {
+        public RangeExpression()
+        {
+            Start = new ExpressionNode();
+            End = new ExpressionNode();
+        }
         public ExpressionNode Start { get; set; }
         public ExpressionNode End { get; set; }
     }

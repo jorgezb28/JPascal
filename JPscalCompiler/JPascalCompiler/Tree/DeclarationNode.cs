@@ -10,7 +10,7 @@ namespace JPascalCompiler.Tree
 {
     public class DeclarationNode :SentenceNode
     {
-        public TokenTypes IdType { get; set; }
+        public IdNode IdType { get; set; }
         public List<IdNode> IdsList;
         public ExpressionNode AssignedValue { get; set; }
 
