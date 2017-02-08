@@ -17,5 +17,15 @@ namespace JPascalCompiler.Tree
             RowSentence = row;
             IsFirstSentece = false;
         }
+
+        protected override void ValidateNodeSemantic()
+        {
+            ConditionExpression.ValidateSemantic();
+
+            foreach (var sentenceNode in Sentence)
+            {
+                sentenceNode.ValidateSemantic();
+            }
+        }
     }
 }

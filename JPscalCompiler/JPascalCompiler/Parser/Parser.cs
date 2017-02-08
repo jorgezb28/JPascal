@@ -1492,7 +1492,7 @@ namespace JPascalCompiler.Parser
                 _currentToken = _lexer.GetNextToken();
                 if (_currentToken.Type == TokenTypes.PsSentenseEnd)
                 {
-                    exprLoop.Sentence.Add(new ContinueNode(row, column));
+                    exprLoop.Sentence.Add(new BreakNode(row, column));
                     _currentToken = _lexer.GetNextToken();
                     return true;
                 }
@@ -2070,16 +2070,16 @@ namespace JPascalCompiler.Parser
 
             if (_currentToken.Type == TokenTypes.OpDivr)
             {
-                var divRealNode = new DivisionRealNode();
-                binaryOperation = divRealNode;
+                //var divRealNode = new DivisionRealNode();
+                binaryOperation.TypeNode = typeof(DivisionRealNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
             if(_currentToken.Type == TokenTypes.OpDiv)
             {
-                var divNode = new DivisionNode();
-                binaryOperation = divNode;
+                //var divNode = new DivisionNode();
+                binaryOperation.TypeNode = typeof(DivisionNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
@@ -2087,16 +2087,16 @@ namespace JPascalCompiler.Parser
 
             if (_currentToken.Type == TokenTypes.OpMod)
             {
-                var modNode = new ModuleNode();
-                binaryOperation = modNode;
+                //var modNode = new ModuleNode();
+                binaryOperation.TypeNode = typeof(ModuleNode);
 
                 _currentToken = _lexer.GetNextToken();
                 return true;
             }
             if(_currentToken.Type == TokenTypes.OpAnd)
             {
-                var andNode = new AndNode();
-                binaryOperation = andNode;
+                //var andNode = new AndNode();
+                binaryOperation.TypeNode = typeof(AndNode); ;
 
                 _currentToken = _lexer.GetNextToken();
                 return true;

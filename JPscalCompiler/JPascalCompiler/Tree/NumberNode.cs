@@ -1,12 +1,20 @@
-﻿namespace JPascalCompiler.Tree
+﻿using JPascalCompiler.Semantic;
+using JPascalCompiler.Semantic.Types;
+
+namespace JPascalCompiler.Tree
 {
     internal class NumberNode :ExpressionNode
     {
-        private int _value;
+        public int Value { get; set; }
 
         public NumberNode(int value)
         {
-            _value = value;
+            Value = value;
+        }
+
+        public override BaseType ValidateSemantic()
+        {
+            return TypesTable.Instance.GetType("integer");
         }
     }
 }

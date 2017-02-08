@@ -13,5 +13,10 @@ namespace JPascalCompiler.Tree
             ColumnSentence = column;
             RowSentence = row;
         }
+
+        protected override void ValidateNodeSemantic()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

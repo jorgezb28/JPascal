@@ -26,6 +26,16 @@ namespace JPascalCompiler.Tree
             OptionalId = optionalId;
         }
 
-        
+
+        protected override void ValidateNodeSemantic()
+        {
+            WritelnExpr.ValidateSemantic();
+            if (OptionalId.Expressions.Any())
+            {
+                OptionalId.ValidateSemantic();
+            }
+            
+
+        }
     }
 }

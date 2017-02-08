@@ -41,10 +41,13 @@ namespace JPascalCompiler
                     }
                     else
                     {
+                        foreach (var sentenceNode in tree)
+                        {
+                            sentenceNode.ValidateSemantic();
+                        }
                         Console.WriteLine("No errors found.");
-                        
                     }
-                    //tree.ValidateSemantic();
+                    
                     //var javaCode = GenerateMain.InitJavaCode(tree.TreeGenerateDeclarationCode(), tree.TreeGenerateCode());
                     //Console.Write(javaCode);
                     

@@ -1,4 +1,5 @@
-﻿using JPascalCompiler.Tree;
+﻿using JPascalCompiler.Semantic.Types;
+using JPascalCompiler.Tree;
 
 namespace JPascalCompiler.Parser
 {
@@ -9,6 +10,11 @@ namespace JPascalCompiler.Parser
         public UnaryNode()
         {
             UnaryOperand = new ExpressionNode();
+        }
+
+        public override BaseType ValidateSemantic()
+        {
+           return UnaryOperand.Expressions[0].ValidateSemantic();
         }
     }
 }

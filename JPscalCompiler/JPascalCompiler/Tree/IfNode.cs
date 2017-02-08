@@ -29,5 +29,20 @@ namespace JPascalCompiler.Tree
             ColumnSentence = column;
             IsFirstSentece = false;
         }
+
+        protected override void ValidateNodeSemantic()
+        {
+            IfConditionExpression.Expressions[0].ValidateSemantic();
+
+            foreach (var sentence in TrueBlockSentences.Sentence)
+            {
+                sentence.ValidateSemantic();
+            }
+
+            foreach (var sentence in ElseBlockSentences.Sentence )
+            {
+                sentence.ValidateSemantic();
+            }
+        }
     }
 }

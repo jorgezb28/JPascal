@@ -1,12 +1,20 @@
-﻿namespace JPascalCompiler.Tree
+﻿using JPascalCompiler.Semantic;
+using JPascalCompiler.Semantic.Types;
+
+namespace JPascalCompiler.Tree
 {
     public class CharNode: ExpressionNode
     {
-        private char _ch;
+        public char Ch { get; set; } 
 
         public CharNode(char ch)
         {
-            _ch = ch;
+            Ch = ch;
+        }
+
+        public override BaseType ValidateSemantic()
+        {
+            return TypesTable.Instance.GetType("char");
         }
     }
 }

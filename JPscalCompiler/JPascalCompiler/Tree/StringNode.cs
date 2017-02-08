@@ -1,4 +1,7 @@
-﻿namespace JPascalCompiler.Tree
+﻿using JPascalCompiler.Semantic;
+using JPascalCompiler.Semantic.Types;
+
+namespace JPascalCompiler.Tree
 {
     internal class StringNode: ExpressionNode
     {
@@ -7,6 +10,11 @@
         public StringNode(string str)
         {
             this._str = str;
+        }
+
+        public override BaseType ValidateSemantic()
+        {
+            return TypesTable.Instance.GetType("string");
         }
     }
 }

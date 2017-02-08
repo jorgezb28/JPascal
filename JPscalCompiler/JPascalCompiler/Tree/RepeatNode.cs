@@ -17,5 +17,14 @@ namespace JPascalCompiler.Tree
 
         public ExpressionNode UntilCondition { get; set; }
         public bool IsFirstSentence { get; set; }
+        protected override void ValidateNodeSemantic()
+        {
+            UntilCondition.ValidateSemantic();
+
+            foreach (var sentenceNode in Sentence)
+            {
+                sentenceNode.ValidateSemantic();
+            }
+        }
     }
 }
